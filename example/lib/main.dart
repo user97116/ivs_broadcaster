@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:ivs_broadcaster_example/home_page.dart';
 
 import 'player_page.dart';
 
-const String playBackUrl =
-    "https://7453a0e95db4.us-east-1.playback.live-video.net/api/video/v1/us-east-1.655758237974.channel.TkU9oEEBXbzE.m3u8";
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
@@ -44,17 +41,6 @@ class _BroadCastWidgetState extends State<BroadCastWidget> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Row(),
-            ElevatedButton(
-              onPressed: () async {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const HomePage(),
-                  ),
-                );
-              },
-              child: const Text('Start Broadcast'),
-            ),
             ElevatedButton(
               onPressed: () async {
                 Navigator.push(

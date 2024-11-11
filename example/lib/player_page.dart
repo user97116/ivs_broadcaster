@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:ivs_broadcaster/Player/Widget/ivs_player_view.dart';
-import 'package:ivs_broadcaster/Player/ivs_player.dart';
 
 class PlayerPage extends StatefulWidget {
   const PlayerPage({super.key});
@@ -11,31 +9,23 @@ class PlayerPage extends StatefulWidget {
 }
 
 class _PlayerPageState extends State<PlayerPage> {
-  late IvsPlayer _player;
-
-  @override
-  void initState() {
-    super.initState();
-    _player = IvsPlayer.instance;
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return  Scaffold(
       body: Column(
         children: [
-          SizedBox(
-            width: 300,
-            height: 200,
-            child: IvsPlayerView(
-              controller: _player,
+          AspectRatio(
+            aspectRatio: 16/9,
+            child: SizedBox(
+              height: 200,
+              child: IvsPlayerView(
+                onStatusChanged: (status) {
+                  print("amar $status");
+                },
+                url:
+                    "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+              ),
             ),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              MethodChannel("ivs_player_channel").invokeMethod("play");
-            },
-            child: Text("Play"),
           ),
         ],
       ),

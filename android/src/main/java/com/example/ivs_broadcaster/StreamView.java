@@ -40,7 +40,7 @@ public class StreamView extends Player.Listener implements PlatformView, MethodC
         MethodChannel methodChannel = new MethodChannel(messenger, "ivs_player_channel");
         methodChannel.setMethodCallHandler(this);
         player.setLogLevel(Player.LogLevel.ERROR);
-        statusChannel = new EventChannel(messenger, "statusStream");
+        statusChannel = new EventChannel(messenger, "ivs_player_status_stream");
     }
 
     @Override
@@ -63,7 +63,6 @@ public class StreamView extends Player.Listener implements PlatformView, MethodC
                 statusSink = null;
             }
         });
-
     }
 
     @Override
@@ -82,6 +81,7 @@ public class StreamView extends Player.Listener implements PlatformView, MethodC
     public void onMethodCall(MethodCall methodCall, @NonNull MethodChannel.Result result) {
         if (methodCall.method.equals("load")) {
             player.load(Uri.parse((String) methodCall.arguments));
+            player.seekTo(0);
             result.success("Loading");
         } else if (methodCall.method.equals("play")) {
             player.play();
@@ -114,6 +114,7 @@ public class StreamView extends Player.Listener implements PlatformView, MethodC
                 break;
             case IDLE:
                 statusSink.success("IDLE");
+                player.play();
                 break;
             case PLAYING:
                 statusSink.success("PLAYING");
