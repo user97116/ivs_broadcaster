@@ -11,6 +11,6 @@ public class IvsBroadcasterFactory: NSObject, FlutterPlatformViewFactory {
     }
     
     public func create(withFrame frame: CGRect, viewIdentifier viewId: Int64, arguments args: Any?) -> FlutterPlatformView {
-        return IvsBroadcasterView(frame, viewId: viewId, args: args, messenger: messenger)
+        return StreamView(frame: frame, messenger: messenger)
     } 
 }

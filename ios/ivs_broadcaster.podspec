@@ -15,10 +15,10 @@ A new Flutter project.
   s.source           = { :path => '.' }
   s.source_files = 'Classes/**/*'
   s.dependency 'Flutter'
-  s.dependency 'AmazonIVSBroadcast', '~> 1.19.0'
+  s.dependency 'AmazonIVSBroadcast'
   s.dependency 'AmazonIVSPlayer'
   s.frameworks       = ['CoreMedia']
-  s.platform = :ios, '12.0'
+  s.platform = :ios, '15.0'
 
   # Flutter.framework does not contain a i386 slice.
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES', 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'i386' }

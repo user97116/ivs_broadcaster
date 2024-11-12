@@ -60,7 +60,6 @@
 		2B74A801E8C9E9821DE4A318F5F6DF68 /* CriticalAlertsPermissionStrategy.h in Headers */ = {isa = PBXBuildFile; fileRef = 5855371FFC9ECCEE71BC258DD5850D88 /* CriticalAlertsPermissionStrategy.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		2BD52AF0B7349AFD2A0957FCD44FF107 /* ContactPermissionStrategy.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B643B7E5F965088B8692E8C1DA0E581 /* ContactPermissionStrategy.m */; };
 		2D1BBF7F8A3EAAAC50F90B3193D38AB1 /* SensorPermissionStrategy.h in Headers */ = {isa = PBXBuildFile; fileRef = 6ED9DA568E21A110EE7F823E3DC40456 /* SensorPermissionStrategy.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		3D71A10983F5283158F11644E297985E /* IvsPlayerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7908AD19C9F0AA50F077EC095E6FBC04 /* IvsPlayerFactory.swift */; };
 		439363C3613F470E06639C65CC898D58 /* BackgroundRefreshStrategy.h in Headers */ = {isa = PBXBuildFile; fileRef = AC6237273E058B8ECFE8EEF612503C52 /* BackgroundRefreshStrategy.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4953D8967359141AF40ED2B563A63B3E /* UnknownPermissionStrategy.h in Headers */ = {isa = PBXBuildFile; fileRef = 88844B29600EF1AD8DC2FEC772FB3231 /* UnknownPermissionStrategy.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4E2DD7D006B85DB28BD826502DABAAA8 /* permission_handler_apple-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 2514524F1584122126187C43F677FE00 /* permission_handler_apple-dummy.m */; };
@@ -86,7 +85,6 @@
 		9E81528E9140922E1FEF7E1F2E37B47A /* PhotoPermissionStrategy.m in Sources */ = {isa = PBXBuildFile; fileRef = 553AD88169206AA67C3C3021D5065FF6 /* PhotoPermissionStrategy.m */; };
 		A0B9D86603AC61C8BC0163B4769A458B /* ivs_broadcaster-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 4A9F3E8E4745924A81FEC11054750BF4 /* ivs_broadcaster-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B5E91458213B12874B48CBEAE0E04B9A /* Pods-Runner-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = F3FD89A3C35F3ED2DDAE100615C517D1 /* Pods-Runner-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		B7100E2485BC48660467BED0BB46265F /* IvsBroadcasterPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34146E6703BE7B3C3A674746E92CEFF0 /* IvsBroadcasterPlugin.swift */; };
 		BC9D4A6AAF3FD3062543219D1C64028A /* PermissionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = AB33452978D31D710F318E57E42A3815 /* PermissionManager.m */; };
 		BEC6F544BF50539C06D9B445E59DD6B4 /* integration_test-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 532A9BE910182D3EF6EEF845A95D5147 /* integration_test-dummy.m */; };
 		BF0739F1B3A93D81C5EEA1F7D63978BC /* BackgroundRefreshStrategy.m in Sources */ = {isa = PBXBuildFile; fileRef = 0B4F17CB880CB8F2BC06FE4D3981AA0E /* BackgroundRefreshStrategy.m */; };
@@ -107,7 +105,6 @@
 		E876F7BB0802071C2E881B76BCC0E40E /* MediaLibraryPermissionStrategy.h in Headers */ = {isa = PBXBuildFile; fileRef = 0366DD38E0A4FF9DF2F4DDA998C811D7 /* MediaLibraryPermissionStrategy.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E979708BADB80FA20CE5002A811BE4BF /* BluetoothPermissionStrategy.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C8467E9B4F0B4C32B0A8242CD5FAE51 /* BluetoothPermissionStrategy.m */; };
 		EB701A7E0A54312EDD2DF062E9ED152D /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 16539E9F8B35D7F7084B7B851A02F17D /* PrivacyInfo.xcprivacy */; };
-		FDE2E1E836DB39338E1729280354D05D /* IvsPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970DDEA4B4464A9987CBA163D76E2CAA /* IvsPlayerView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -222,7 +219,6 @@
 		282936C70F28608A7834B85D1D9C38DA /* permission_handler_apple.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; name = permission_handler_apple.podspec; path = "../../../../../../../../../.pub-cache/hosted/pub.dev/permission_handler_apple-9.4.5/ios/permission_handler_apple.podspec"; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		2A5BA35523D294B71864F4006A031BA1 /* PermissionStrategy.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = PermissionStrategy.h; path = "../../../../../../../../../../../.pub-cache/hosted/pub.dev/permission_handler_apple-9.4.5/ios/Classes/strategies/PermissionStrategy.h"; sourceTree = "<group>"; };
 		3038D58B1D3F2FDA1398C12BCF14D248 /* Pods-Runner.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Runner.debug.xcconfig"; sourceTree = "<group>"; };
-		34146E6703BE7B3C3A674746E92CEFF0 /* IvsBroadcasterPlugin.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = IvsBroadcasterPlugin.swift; path = ../../../../../../../ios/Classes/IvsBroadcasterPlugin.swift; sourceTree = "<group>"; };
 		3781AA4A5012A9A48612CDC101719CF3 /* ivs_broadcaster.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ivs_broadcaster.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3796D27DBEF9607B82F8A341E78D5CE9 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../../../../../../LICENSE; sourceTree = "<group>"; };
 		3D81465C746B2E79A7FCD0FFFBB63B94 /* permission_handler_apple.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = permission_handler_apple.modulemap; sourceTree = "<group>"; };
@@ -254,7 +250,6 @@
 		746612FA263626E032D80BAF0287A8F0 /* MediaLibraryPermissionStrategy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = MediaLibraryPermissionStrategy.m; path = "../../../../../../../../../../../.pub-cache/hosted/pub.dev/permission_handler_apple-9.4.5/ios/Classes/strategies/MediaLibraryPermissionStrategy.m"; sourceTree = "<group>"; };
 		74F0F51D39ABC15E703AE81B2D18F9C2 /* Codec.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = Codec.h; path = "../../../../../../../../../../../.pub-cache/hosted/pub.dev/permission_handler_apple-9.4.5/ios/Classes/util/Codec.h"; sourceTree = "<group>"; };
 		778796150DC8CDE09D5A5FC52C79B195 /* ivs_broadcaster-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "ivs_broadcaster-prefix.pch"; sourceTree = "<group>"; };
-		7908AD19C9F0AA50F077EC095E6FBC04 /* IvsPlayerFactory.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = IvsPlayerFactory.swift; path = ../../../../../../../ios/Classes/IvsPlayerFactory.swift; sourceTree = "<group>"; };
 		7938E81AE6B09457D8C54EEE9F2606FC /* AppTrackingTransparencyPermissionStrategy.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = AppTrackingTransparencyPermissionStrategy.h; path = "../../../../../../../../../../../.pub-cache/hosted/pub.dev/permission_handler_apple-9.4.5/ios/Classes/strategies/AppTrackingTransparencyPermissionStrategy.h"; sourceTree = "<group>"; };
 		7BF6CEBA64213FFA00425ABE5DBB16FE /* NotificationPermissionStrategy.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = NotificationPermissionStrategy.h; path = "../../../../../../../../../../../.pub-cache/hosted/pub.dev/permission_handler_apple-9.4.5/ios/Classes/strategies/NotificationPermissionStrategy.h"; sourceTree = "<group>"; };
 		7CF0A30CFA03CE648483E796AAA3C95D /* SpeechPermissionStrategy.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = SpeechPermissionStrategy.h; path = "../../../../../../../../../../../.pub-cache/hosted/pub.dev/permission_handler_apple-9.4.5/ios/Classes/strategies/SpeechPermissionStrategy.h"; sourceTree = "<group>"; };
@@ -264,7 +259,6 @@
 		838B4A8990C9CD6BE99B8005F1F8D6C9 /* permission_handler_apple-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "permission_handler_apple-umbrella.h"; sourceTree = "<group>"; };
 		8455AECDDAC77E042EECA48C99AAC339 /* EventPermissionStrategy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = EventPermissionStrategy.m; path = "../../../../../../../../../../../.pub-cache/hosted/pub.dev/permission_handler_apple-9.4.5/ios/Classes/strategies/EventPermissionStrategy.m"; sourceTree = "<group>"; };
 		88844B29600EF1AD8DC2FEC772FB3231 /* UnknownPermissionStrategy.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = UnknownPermissionStrategy.h; path = "../../../../../../../../../../../.pub-cache/hosted/pub.dev/permission_handler_apple-9.4.5/ios/Classes/strategies/UnknownPermissionStrategy.h"; sourceTree = "<group>"; };
-		970DDEA4B4464A9987CBA163D76E2CAA /* IvsPlayerView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = IvsPlayerView.swift; path = ../../../../../../../ios/Classes/IvsPlayerView.swift; sourceTree = "<group>"; };
 		97BF86CE32BBAED2B8C7E4F5CF4A60E2 /* PhonePermissionStrategy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = PhonePermissionStrategy.m; path = "../../../../../../../../../../../.pub-cache/hosted/pub.dev/permission_handler_apple-9.4.5/ios/Classes/strategies/PhonePermissionStrategy.m"; sourceTree = "<group>"; };
 		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		9FACB597ACF9B0E842AFFED8E632449C /* PermissionHandlerPlugin.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = PermissionHandlerPlugin.m; path = "../../../../../../../../../../.pub-cache/hosted/pub.dev/permission_handler_apple-9.4.5/ios/Classes/PermissionHandlerPlugin.m"; sourceTree = "<group>"; };
@@ -477,16 +471,6 @@
 			path = "Target Support Files/Pods-Runner";
 			sourceTree = "<group>";
 		};
-		236FC56CA49F6D0DF388F210369014F3 /* Classes */ = {
-			isa = PBXGroup;
-			children = (
-				34146E6703BE7B3C3A674746E92CEFF0 /* IvsBroadcasterPlugin.swift */,
-				7908AD19C9F0AA50F077EC095E6FBC04 /* IvsPlayerFactory.swift */,
-				970DDEA4B4464A9987CBA163D76E2CAA /* IvsPlayerView.swift */,
-			);
-			path = Classes;
-			sourceTree = "<group>";
-		};
 		275F2EDC11BE3EF33528122CB09F8CFF /* Documents */ = {
 			isa = PBXGroup;
 			children = (
@@ -595,14 +579,6 @@
 				E6CF5C6F7C0998997D68FE6E710058B1 /* integration_test.podspec */,
 			);
 			name = Pod;
-			sourceTree = "<group>";
-		};
-		54B670A12C39FA8B6E711E16733C57AC /* plugins */ = {
-			isa = PBXGroup;
-			children = (
-				D83B2FF51A2B9AA6ABE0562C7138A2E7 /* ivs_broadcaster */,
-			);
-			path = plugins;
 			sourceTree = "<group>";
 		};
 		57FB94F92E80AB5E91004B9FB78ECC41 /* plugins */ = {
@@ -855,14 +831,6 @@
 			path = "../../../../../../../../../.pub-cache/hosted/pub.dev/permission_handler_apple-9.4.5/ios";
 			sourceTree = "<group>";
 		};
-		AE5064C547205F23033545CDDAE1FD92 /* .symlinks */ = {
-			isa = PBXGroup;
-			children = (
-				54B670A12C39FA8B6E711E16733C57AC /* plugins */,
-			);
-			path = .symlinks;
-			sourceTree = "<group>";
-		};
 		B7CBBC72ACC0EB7D585E2EF2EB778D5F /* AmazonIVSPlayer */ = {
 			isa = PBXGroup;
 			children = (
@@ -878,14 +846,6 @@
 				E18BAAB5AA7012EB0A6E5779FC8583B6 /* Documents */,
 			);
 			path = ..;
-			sourceTree = "<group>";
-		};
-		BF9282CCD065F296A0B0B5DEC64E926D /* ios */ = {
-			isa = PBXGroup;
-			children = (
-				236FC56CA49F6D0DF388F210369014F3 /* Classes */,
-			);
-			path = ios;
 			sourceTree = "<group>";
 		};
 		C5059F08D30ACFA0217DF5F6C3E8F23B /* .symlinks */ = {
@@ -958,14 +918,6 @@
 				282936C70F28608A7834B85D1D9C38DA /* permission_handler_apple.podspec */,
 			);
 			name = Pod;
-			sourceTree = "<group>";
-		};
-		D83B2FF51A2B9AA6ABE0562C7138A2E7 /* ivs_broadcaster */ = {
-			isa = PBXGroup;
-			children = (
-				BF9282CCD065F296A0B0B5DEC64E926D /* ios */,
-			);
-			path = ivs_broadcaster;
 			sourceTree = "<group>";
 		};
 		D882FDB2F6451198AA70B0DA7506CC4B /* Pod */ = {
@@ -1044,7 +996,6 @@
 		EF1FC29CD720818F3C7006450187C21E /* ios */ = {
 			isa = PBXGroup;
 			children = (
-				AE5064C547205F23033545CDDAE1FD92 /* .symlinks */,
 			);
 			path = ios;
 			sourceTree = "<group>";
@@ -1392,9 +1343,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				857BB5E7A0BE0CF07DAD4A8ACFD7C1BE /* ivs_broadcaster-dummy.m in Sources */,
-				B7100E2485BC48660467BED0BB46265F /* IvsBroadcasterPlugin.swift in Sources */,
-				3D71A10983F5283158F11644E297985E /* IvsPlayerFactory.swift in Sources */,
-				FDE2E1E836DB39338E1729280354D05D /* IvsPlayerView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1596,7 +1544,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 167F1E5A155A90F6D091BB034814E7C0 /* Pods-Runner.profile.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = NO;
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
@@ -2043,7 +1990,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 3038D58B1D3F2FDA1398C12BCF14D248 /* Pods-Runner.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = NO;
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
@@ -2354,7 +2300,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 80BF9B6370D3FDB139ABC19C7736EC86 /* Pods-Runner.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = NO;
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
