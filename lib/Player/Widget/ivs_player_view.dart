@@ -64,11 +64,33 @@ class _IvsPlayerViewState extends State<IvsPlayerView> {
         ],
       );
     } else if (Platform.isIOS) {
-      return UiKitView(
-        viewType: 'ivs_player',
-        onPlatformViewCreated: (id) {
-          ivsPlayerChannel.invokeMethod("load", widget.url);
-        },
+      return Stack(
+        children: [
+          UiKitView(
+            viewType: 'ivs_player',
+            onPlatformViewCreated: (id) async {
+              await ivsPlayerChannel.invokeMethod("load", widget.url);
+              statusStream = statusEventChannel.receiveBroadcastStream().listen(
+                (event) {
+                  if (event == "BUFFERING") {
+                    isLoading = true;
+                    setState(() {});
+                  } else {
+                    isLoading = false;
+                    setState(() {});
+                  }
+                  widget.onStatusChanged(event);
+                },
+              );
+            },
+          ),
+          if (isLoading)
+            Container(
+              color: Colors.black38,
+              alignment: Alignment.center,
+              child: const CircularProgressIndicator(),
+            )
+        ],
       );
     }
     return const Center(

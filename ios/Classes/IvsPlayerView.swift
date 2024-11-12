@@ -9,6 +9,7 @@ public class StreamView: NSObject, FlutterPlatformView, IVSPlayer.Delegate {
     private var eventChannel: FlutterEventChannel!
     private var statusSink: FlutterEventSink?
     
+    
     init(frame: CGRect, messenger: FlutterBinaryMessenger) {
         super.init()
         
@@ -51,7 +52,8 @@ public class StreamView: NSObject, FlutterPlatformView, IVSPlayer.Delegate {
                 }
                 
             case "play":
-                self.player.looping = true;
+//                self.player.looping = true;
+                self.playerView.player?.looping = true;
                 self.player.play()
                 result("Playing")
                 
@@ -71,6 +73,7 @@ public class StreamView: NSObject, FlutterPlatformView, IVSPlayer.Delegate {
     private func onClose() {
         self.playerView.removeFromSuperview()
     }
+
 }
 
 extension StreamView: FlutterStreamHandler {
@@ -93,6 +96,7 @@ extension StreamView {
                 statusSink?("BUFFERING")
             
             case .ready:
+                player.looping = true;
                 self.player.play()
                 statusSink?("READY")
                 
