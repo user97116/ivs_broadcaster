@@ -3,23 +3,9 @@ import UIKit
 import AmazonIVSPlayer
 
 public class StreamView: NSObject, FlutterPlatformView, IVSPlayer.Delegate {
-    internal init(player: IVSPlayer? = nil, playerView: IVSPlayerView? = nil, playerViewController: UIViewController? = nil, eventChannel: FlutterEventChannel? = nil, statusSink: FlutterEventSink? = nil) {
-        self.player = player
-        self.playerView = playerView
-        self.playerViewController = playerViewController
-        self.eventChannel = eventChannel
-        self.statusSink = statusSink
-    }
-    
-    
-    public func view() -> UIView {
-        playerView
-    }
-    
-    
     private var player: IVSPlayer!
     private var playerView: IVSPlayerView!
-    private var playerViewController: UIViewController!
+    private var surfaceView: UIView!
     private var eventChannel: FlutterEventChannel!
     private var statusSink: FlutterEventSink?
     
@@ -28,8 +14,10 @@ public class StreamView: NSObject, FlutterPlatformView, IVSPlayer.Delegate {
         
         // Initialize the player
         self.player = IVSPlayer()
-        self.playerView = IVSPlayerView()
-        
+        self.playerView = IVSPlayerView(frame: frame)
+        self.surfaceView = UIView(frame: frame)
+        self.surfaceView.addSubview(self.playerView)
+
         //
         self.playerView.player = player
         
@@ -46,32 +34,37 @@ public class StreamView: NSObject, FlutterPlatformView, IVSPlayer.Delegate {
         self.eventChannel.setStreamHandler(self)
     }
     
-
+    public func view() -> UIView {
+        self.playerView
+    }
+    
     
     public func onMethodCall(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        print("StreamView method calling")
         switch call.method {
-        case "load":
-            if let urlString = call.arguments as? String, let url = URL(string: urlString) {
-                self.player.load(url)
-                result("Loading")
-            } else {
-                result(FlutterError(code: "INVALID_URL", message: "Invalid URL", details: nil))
-            }
-            
-        case "play":
-            self.player.play()
-            result("Playing")
-            
-        case "pause":
-            self.player.pause()
-            result("Paused")
-            
-        case "close":
-            self.onClose()
-            result("Closed")
-            
-        default:
-            result(FlutterMethodNotImplemented)
+            case "load":
+                if let urlString = call.arguments as? String, let url = URL(string: urlString) {
+                    self.player.load(url)
+                    result("Loading")
+                } else {
+                    result(FlutterError(code: "INVALID_URL", message: "Invalid URL", details: nil))
+                }
+                
+            case "play":
+                self.player.looping = true;
+                self.player.play()
+                result("Playing")
+                
+            case "pause":
+                self.player.pause()
+                result("Paused")
+                
+            case "close":
+                self.onClose()
+                result("Closed")
+                
+            default:
+                result(FlutterMethodNotImplemented)
         }
     }
     
@@ -81,7 +74,6 @@ public class StreamView: NSObject, FlutterPlatformView, IVSPlayer.Delegate {
 }
 
 extension StreamView: FlutterStreamHandler {
-    
     public func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink) -> FlutterError? {
         self.statusSink = events
         return nil
@@ -94,27 +86,27 @@ extension StreamView: FlutterStreamHandler {
 }
 
 extension StreamView {
- 
-    public func onStateChanged(_ state: IVSPlayer.State) {
+    public func player(_ player: IVSPlayer, didChangeState state: IVSPlayer.State) {
+        print("StreamView status")
         switch state {
-        case .buffering:
-            statusSink?("BUFFERING")
+            case .buffering:
+                statusSink?("BUFFERING")
             
-        case .ready:
-            self.player.play()
-            statusSink?("READY")
-            
-        case .idle:
-            statusSink?("IDLE")
-            
-        case .playing:
-            statusSink?("PLAYING")
-            
-        case .ended:
-            statusSink?("ENDED")
-            
-        default:
-            break
+            case .ready:
+                self.player.play()
+                statusSink?("READY")
+                
+            case .idle:
+                statusSink?("IDLE")
+                
+            case .playing:
+                statusSink?("PLAYING")
+                
+            case .ended:
+                statusSink?("ENDED")
+                
+            default:
+                break
         }
     }
 }
