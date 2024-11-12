@@ -1,240 +1,120 @@
-import UIKit
-import AVFoundation
 import Flutter
+import UIKit
 import AmazonIVSPlayer
 
-class IvsPlayerView: NSObject, FlutterPlatformView, FlutterStreamHandler , IVSPlayer.Delegate{
-    
-    private var playerView: UIView
-    private var _methodChannel: FlutterMethodChannel?
-    private var _eventChannel: FlutterEventChannel?
-    private var _eventSink: FlutterEventSink?
-    let player =  IVSPlayer()
-    private var _ivsPlayerView: IVSPlayerView?
-    
-    
-    func view() -> UIView {
-        return playerView;
+public class StreamView: NSObject, FlutterPlatformView, IVSPlayer.Delegate {
+    internal init(player: IVSPlayer? = nil, playerView: IVSPlayerView? = nil, playerViewController: UIViewController? = nil, eventChannel: FlutterEventChannel? = nil, statusSink: FlutterEventSink? = nil) {
+        self.player = player
+        self.playerView = playerView
+        self.playerViewController = playerViewController
+        self.eventChannel = eventChannel
+        self.statusSink = statusSink
     }
     
-    func player(_ player: IVSPlayer, didChangeState state: IVSPlayer.State) {
-        if _eventSink != nil {
-            var dict = [String: Any]()
-            dict = [:]
-            dict["state"] = state.rawValue
-            self._eventSink!(dict)
-        }
+    
+    public func view() -> UIView {
+        playerView
     }
     
-    func player(_ player: IVSPlayer, didChangeDuration time: CMTime) {
-        if _eventSink != nil {
-            var dict = [String: Any]()
-            dict = [:]
-            dict["duration"] = time.seconds
-            self._eventSink!(dict)
-        }
-    }
     
-    func player(_ player: IVSPlayer, didChangeSyncTime time: CMTime) {
-        if _eventSink != nil {
-            var dict = [String: Any]()
-            dict = [:]
-            dict["syncTime"] = time.seconds
-            self._eventSink!(dict)
-        }
-    }
+    private var player: IVSPlayer!
+    private var playerView: IVSPlayerView!
+    private var playerViewController: UIViewController!
+    private var eventChannel: FlutterEventChannel!
+    private var statusSink: FlutterEventSink?
     
-    func player(_ player: IVSPlayer, didChangeQuality quality: IVSQuality?) {
-        if _eventSink != nil {
-            var dict = [String: Any]()
-            dict = [:]
-            dict["quality"] = quality?.name
-            self._eventSink!(dict)
-        }
-    }
-    
-    func player(_ player: IVSPlayer, didFailWithError error: any Error) {
-        if _eventSink != nil {
-            var dict = [String: Any]()
-            dict = [:]
-            dict["error"] = error.localizedDescription
-            self._eventSink!(dict)
-        }
-    }
-    
-    func player(_ player: IVSPlayer, didSeekTo time: CMTime) {
-        if _eventSink != nil {
-            var dict = [String: Any]()
-            dict = [:]
-            dict["seekedtotime"] = time.seconds
-            self._eventSink!(dict)
-        }
-    }
-    
-    func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink) -> FlutterError? {
-        self._eventSink = events;
-        return nil
-    }
-    
-    func onCancel(withArguments arguments: Any?) -> FlutterError? {
-        self._eventSink = nil
-        return nil
-    }
-    
-    init(_ frame: CGRect,
-         viewId: Int64,
-         args: Any?,
-         messenger: FlutterBinaryMessenger
-    ) {
-        _methodChannel = FlutterMethodChannel(
-            name: "ivs_player", binaryMessenger: messenger
-        );
-        _eventChannel = FlutterEventChannel(name: "ivs_player_event", binaryMessenger: messenger)
-        playerView =  UIView(frame: frame)
-        super.init();
+    init(frame: CGRect, messenger: FlutterBinaryMessenger) {
+        super.init()
+        
+        // Initialize the player
+        self.player = IVSPlayer()
+        self.playerView = IVSPlayerView()
+        
+        //
+        self.playerView.player = player
+        
+        // Self must conform to IVSPlayer.Delegate
         player.delegate = self
-        _methodChannel?.setMethodCallHandler(onMethodCall)
-        _eventChannel?.setStreamHandler(self)
+
+        
+        // Setup Flutter method channel
+        let methodChannel = FlutterMethodChannel(name: "ivs_player_channel", binaryMessenger: messenger)
+        methodChannel.setMethodCallHandler(self.onMethodCall)
+        
+        // Set up event channel for status updates
+        self.eventChannel = FlutterEventChannel(name: "ivs_player_status_stream", binaryMessenger: messenger)
+        self.eventChannel.setStreamHandler(self)
     }
     
+
     
-    func onMethodCall(call: FlutterMethodCall, result: FlutterResult) {
-        switch(call.method){
-        case "startPlayer":
-            let args = call.arguments as? [String: Any]
-            let url = args?["url"] as? String
-            let autoPlay = args?["autoPlay"] as? Bool
-            startPlayer(url!, autoPlay!)
-            result(true)
-        case "stopPlayer":
-            stopPlayer()
-            result(true)
-        case "mute":
-            mutePlayer()
-            result(true)
+    public func onMethodCall(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        switch call.method {
+        case "load":
+            if let urlString = call.arguments as? String, let url = URL(string: urlString) {
+                self.player.load(url)
+                result("Loading")
+            } else {
+                result(FlutterError(code: "INVALID_URL", message: "Invalid URL", details: nil))
+            }
+            
+        case "play":
+            self.player.play()
+            result("Playing")
+            
         case "pause":
-            pausePlayer()
-            result(true)
-        case "resume":
-            resumePlayer()
-            result(true)
-        case "seek":
-            let args = call.arguments as? [String: Any]
-            let time = args?["time"] as? String
-            seekPlayer(time!)
-            result(true)
-        case "position":
-            result(getPosition())
-        case "qualities":
-            var qualities = getQualities()
-            print(qualities)
-            result(qualities)
-        case "setQuality":
-            let args = call.arguments as? [String: Any]
-            let quality = args?["quality"] as? String
-            setQuality(quality!)
-            result(true)
-        case "autoQuality":
-            toggleAutoQuality()
-            result(true)
-        case "isAuto":
-            result(isAuto())
+            self.player.pause()
+            result("Paused")
+            
+        case "close":
+            self.onClose()
+            result("Closed")
+            
         default:
             result(FlutterMethodNotImplemented)
         }
     }
     
-    func isAuto()-> Bool{
-        if _ivsPlayerView != nil {
-            return  _ivsPlayerView?.player?.autoQualityMode ?? false
-        }
-        return false
+    private func onClose() {
+        self.playerView.removeFromSuperview()
+    }
+}
+
+extension StreamView: FlutterStreamHandler {
+    
+    public func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink) -> FlutterError? {
+        self.statusSink = events
+        return nil
     }
     
-    func toggleAutoQuality(){
-        if _ivsPlayerView != nil {
-            _ivsPlayerView?.player?.autoQualityMode.toggle()
-        }
+    public func onCancel(withArguments arguments: Any?) -> FlutterError? {
+        self.statusSink = nil
+        return nil
     }
-    
-    func setQuality(_ quality: String) {
-        if _ivsPlayerView != nil {
-            var qualities = _ivsPlayerView?.player?.qualities
-            var qualitytobechange = qualities?.first(where: { $0.name == quality } )
-            _ivsPlayerView?.player?.setQuality(qualitytobechange!, adaptive: true)
-        }
-    }
-    
-    func getQualities() -> Array<String> {
-        if _ivsPlayerView != nil {
-            return _ivsPlayerView?.player?.qualities.map{$0.name} as! Array<String>
-        }
-        return []
-    }
-    
-    func getPosition ()-> String {
-        if _ivsPlayerView != nil {
-            return _ivsPlayerView?.player?.position.seconds.description ?? "0"
-        }
-        return "0";
-    }
-    
-    
-    func seekPlayer(_ time: String){
-        if _ivsPlayerView != nil {
-            _ivsPlayerView?.player?.seek(to:  CMTimeMake(value: Int64(time) ?? 0, timescale: 1))
-        }
-    }
-    
-    func startPlayer(_ url:String, _ autoPlay:Bool){
-        do{
-            _ivsPlayerView = IVSPlayerView()
-            _ivsPlayerView?.player = player
-            player.load(URL(string: url))
-            if autoPlay {
-                player.play()
-            }
-            attachPreview(container: playerView, preview: _ivsPlayerView!)
-        }
-    }
-    
-    func attachPreview(container: UIView, preview: UIView) {
-        // Clear current view, and then attach the new view.
-        container.subviews.forEach { $0.removeFromSuperview() }
-        preview.translatesAutoresizingMaskIntoConstraints = false
-        container.addSubview(preview)
-        NSLayoutConstraint.activate([
-            preview.topAnchor.constraint(equalTo: container.topAnchor, constant: 0),
-            preview.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: 0),
-            preview.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 0),
-            preview.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: 0),
-        ])
-    }
-    
-    func stopPlayer(){
-        player.pause()
-        _ivsPlayerView?.player = nil
-    }
-    
-    func mutePlayer(){
-        do {
-            if player.volume == 0 {
-                player.volume = 1
-            }else{
-                player.volume = 0
-            }
-        }
-    }
-    
-    func pausePlayer(){
-        if _ivsPlayerView != nil {
-            _ivsPlayerView?.player?.pause()
-        }
-    }
-    
-    func resumePlayer(){
-        if _ivsPlayerView != nil {
-            _ivsPlayerView?.player?.play()
+}
+
+extension StreamView {
+ 
+    public func onStateChanged(_ state: IVSPlayer.State) {
+        switch state {
+        case .buffering:
+            statusSink?("BUFFERING")
+            
+        case .ready:
+            self.player.play()
+            statusSink?("READY")
+            
+        case .idle:
+            statusSink?("IDLE")
+            
+        case .playing:
+            statusSink?("PLAYING")
+            
+        case .ended:
+            statusSink?("ENDED")
+            
+        default:
+            break
         }
     }
 }

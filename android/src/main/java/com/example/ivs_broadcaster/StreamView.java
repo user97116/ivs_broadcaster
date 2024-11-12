@@ -26,6 +26,8 @@ import com.amazonaws.ivs.player.Quality;
 import androidx.annotation.NonNull;
 
 public class StreamView extends Player.Listener implements PlatformView, MethodCallHandler, SurfaceHolder.Callback {
+    private static final String TAG = "StreamView";
+
     private final Player player;
     private final SurfaceView surfaceView;
     private Surface surface;
@@ -36,10 +38,13 @@ public class StreamView extends Player.Listener implements PlatformView, MethodC
         PlayerView playerView = new PlayerView(context);
         player = playerView.getPlayer();
         player.addListener(this);
+
         surfaceView = new SurfaceView(context);
         MethodChannel methodChannel = new MethodChannel(messenger, "ivs_player_channel");
         methodChannel.setMethodCallHandler(this);
-        player.setLogLevel(Player.LogLevel.ERROR);
+
+//        player.setLogLevel(Player.LogLevel.DEBUG);
+
         statusChannel = new EventChannel(messenger, "ivs_player_status_stream");
     }
 
@@ -52,6 +57,7 @@ public class StreamView extends Player.Listener implements PlatformView, MethodC
     public void onFlutterViewAttached(@NonNull View flutterView) {
         PlatformView.super.onFlutterViewAttached(flutterView);
         surfaceView.getHolder().addCallback(this);
+
         statusChannel.setStreamHandler(new EventChannel.StreamHandler() {
             @Override
             public void onListen(Object o, EventChannel.EventSink event) {
@@ -68,83 +74,132 @@ public class StreamView extends Player.Listener implements PlatformView, MethodC
     @Override
     public void onFlutterViewDetached() {
         PlatformView.super.onFlutterViewDetached();
+        if (surfaceView != null) {
+            surfaceView.getHolder().removeCallback(this);
+        }
     }
 
     @Override
     public void dispose() {
-        player.removeListener(this);
-        player.release();
-        Log.d("amar", "dispose");
+        onClose();
     }
 
-    @Override
-    public void onMethodCall(MethodCall methodCall, @NonNull MethodChannel.Result result) {
-        if (methodCall.method.equals("load")) {
-            player.load(Uri.parse((String) methodCall.arguments));
-            player.seekTo(0);
-            result.success("Loading");
-        } else if (methodCall.method.equals("play")) {
-            player.play();
-            result.success("Playing");
-        } else {
-            result.notImplemented();
+    private void onClose() {
+        // Remove listener and release player resources if player is not null
+        if (player != null) {
+            player.removeListener(this);
+            player.release();
+            Log.d(TAG, "Player disposed.");
+        }
+
+        // Ensure surface is cleaned up properly
+        if (surface != null) {
+            surface.release();  // Optional: depending on how the surface is managed.
         }
     }
 
 
     @Override
-    public void onCue(@NonNull Cue cue) {
+    public void onMethodCall(MethodCall methodCall, @NonNull MethodChannel.Result result) {
+        switch (methodCall.method) {
+            case "load":
+                String uriString = (String) methodCall.arguments;
+                if (uriString != null && !uriString.isEmpty()) {
+                    player.load(Uri.parse(uriString));
+                    result.success("Loading");
+                } else {
+                    result.error("INVALID_URL", "Provided URL is invalid", null);
+                }
+                break;
 
+            case "play":
+                player.play();
+                result.success("Playing");
+                break;
+
+            case "close":
+                onClose();
+                result.success("Closed");
+                break;
+
+            case "pause":
+                player.pause();
+                result.success("Paused");
+                break;
+
+            default:
+                result.notImplemented();
+        }
     }
 
     @Override
-    public void onDurationChanged(long l) {
+    public void onCue(@NonNull Cue cue) {
+        // Handle cue events if necessary
+        Log.d(TAG, "Cue received: " + cue.toString());
+    }
 
+    @Override
+    public void onDurationChanged(long duration) {
+        Log.d(TAG, "Duration changed: " + duration);
     }
 
     @Override
     public void onStateChanged(@NonNull Player.State state) {
+        Log.d(TAG, "Player state changed: " + state.name());
+
         switch (state) {
             case BUFFERING:
                 statusSink.success("BUFFERING");
                 break;
+
             case READY:
+                player.setLooping(true);
                 player.play();
                 statusSink.success("READY");
                 break;
+
             case IDLE:
                 statusSink.success("IDLE");
-                player.play();
                 break;
+
             case PLAYING:
                 statusSink.success("PLAYING");
+                break;
+
+            case ENDED:
+                statusSink.success("ENDED");
                 break;
         }
     }
 
     @Override
     public void onError(@NonNull PlayerException e) {
-
+        Log.e(TAG, "Player error: " + e.getMessage());
+        Log.e(TAG, "Error details: " + e.getCause());
+        if (statusSink != null) {
+            statusSink.success("ERROR: " + e.getMessage());
+        }
     }
+
 
     @Override
     public void onRebuffering() {
-
+        Log.d(TAG, "Rebuffering...");
     }
 
     @Override
-    public void onSeekCompleted(long l) {
-
+    public void onSeekCompleted(long position) {
+        Log.d(TAG, "Seek completed at position: " + position);
     }
 
     @Override
-    public void onVideoSizeChanged(int i, int i1) {
-
+    public void onVideoSizeChanged(int width, int height) {
+        Log.d(TAG, "Video size changed: " + width + "x" + height);
     }
 
     @Override
     public void onQualityChanged(@NonNull Quality quality) {
-
+        Log.d(TAG, "Quality changed: " + quality.toString());
     }
 
     @Override
@@ -152,12 +207,13 @@ public class StreamView extends Player.Listener implements PlatformView, MethodC
         this.surface = surfaceHolder.getSurface();
         if (player != null) {
             player.setSurface(this.surface);
+            Log.d(TAG, "Surface created and player surface set.");
         }
     }
 
     @Override
-    public void surfaceChanged(@NonNull SurfaceHolder surfaceHolder, int i, int i1, int i2) {
-
+    public void surfaceChanged(@NonNull SurfaceHolder surfaceHolder, int format, int width, int height) {
+        // Handle surface changes if necessary
     }
 
     @Override
@@ -165,7 +221,7 @@ public class StreamView extends Player.Listener implements PlatformView, MethodC
         this.surface = null;
         if (player != null) {
             player.setSurface(null);
+            Log.d(TAG, "Surface destroyed and player surface cleared.");
         }
     }
-
 }
