@@ -104,3 +104,4 @@ class _IvsPlayerViewState extends State<IvsPlayerView> {
     );
   }
 }
+

@@ -1,23 +1,31 @@
 package com.example.ivs_broadcaster;
 
+import android.os.Build;
+
 import androidx.annotation.NonNull;
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
-import io.flutter.plugin.common.PluginRegistry;
 
-public class IvsBroadcasterPlugin  implements FlutterPlugin {
+public class IvsBroadcasterPlugin implements FlutterPlugin {
 
 
-  @Override
-  public void onAttachedToEngine(@NonNull FlutterPluginBinding binding) {
-    binding
-        .getPlatformViewRegistry()
-        .registerViewFactory(
-            "ivs_player", new StreamFactory(binding.getBinaryMessenger()));
-  }
+    @Override
+    public void onAttachedToEngine(@NonNull FlutterPluginBinding binding) {
+        binding
+                .getPlatformViewRegistry()
+                .registerViewFactory(
+                        "ivs_player", new IVSPlayerFactory(binding.getBinaryMessenger()));
 
-  @Override
-  public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            binding
+                    .getPlatformViewRegistry()
+                    .registerViewFactory(
+                            "ivs_stage_player", new IVSStageFactory(binding.getBinaryMessenger()));
+        }
+    }
 
-  }
+    @Override
+    public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
+
+    }
 }
