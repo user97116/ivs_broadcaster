@@ -1,8 +1,9 @@
+
 import Foundation
 import Flutter
 import UIKit
 
-public class IvsBroadcasterFactory: NSObject, FlutterPlatformViewFactory {
+public class IvsStagePlayerFactory: NSObject, FlutterPlatformViewFactory {
     private var messenger: FlutterBinaryMessenger
 
     init(messenger: FlutterBinaryMessenger) {
@@ -11,6 +12,6 @@ public class IvsBroadcasterFactory: NSObject, FlutterPlatformViewFactory {
     }
     
     public func create(withFrame frame: CGRect, viewIdentifier viewId: Int64, arguments args: Any?) -> FlutterPlatformView {
-        return StreamView(frame: frame, messenger: messenger)
-    } 
+        return IvsStagePlayerView(frame: frame, messenger: messenger)
+    }
 }

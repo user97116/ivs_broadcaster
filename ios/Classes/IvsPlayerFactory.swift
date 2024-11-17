@@ -12,6 +12,6 @@ public class IvsPlayerFactory: NSObject, FlutterPlatformViewFactory {
     }
     
     public func create(withFrame frame: CGRect, viewIdentifier viewId: Int64, arguments args: Any?) -> FlutterPlatformView {
-        return StreamView(frame: frame, messenger: messenger)
+        return IVSPlayerFlutterView(frame: frame, messenger: messenger)
     }
 }

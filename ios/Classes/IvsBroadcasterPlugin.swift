@@ -7,6 +7,10 @@ public class IvsBroadcasterPlugin: NSObject, FlutterPlugin {
           IvsPlayerFactory(messenger: registrar.messenger()),
           withId: "ivs_player"
       )
+      registrar.register(
+        IvsStagePlayerFactory(messenger: registrar.messenger()),
+          withId: "ivs_stage_player"
+      )
   }
 }
 

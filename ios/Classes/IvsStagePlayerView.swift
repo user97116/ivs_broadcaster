@@ -2,7 +2,7 @@ import Flutter
 import UIKit
 import AmazonIVSPlayer
 
-public class IVSPlayerFlutterView: NSObject, FlutterPlatformView, IVSPlayer.Delegate {
+public class IvsStagePlayerView: NSObject, FlutterPlatformView, IVSPlayer.Delegate {
     private var player: IVSPlayer!
     private var playerView: IVSPlayerView!
     private var surfaceView: UIView!
@@ -95,7 +95,7 @@ public class IVSPlayerFlutterView: NSObject, FlutterPlatformView, IVSPlayer.Dele
     }
 }
 
-extension IVSPlayerFlutterView: FlutterStreamHandler {
+extension IvsStagePlayerView: FlutterStreamHandler {
     public func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink) -> FlutterError? {
         self.statusSink = events
         print("StreamView listening for status updates.")
@@ -109,7 +109,7 @@ extension IVSPlayerFlutterView: FlutterStreamHandler {
     }
 }
 
-extension IVSPlayerFlutterView {
+extension IvsStagePlayerView {
     public func player(_ player: IVSPlayer, didChangeState state: IVSPlayer.State) {
         print("StreamView player state changed: \(state.rawValue)")
         switch state {

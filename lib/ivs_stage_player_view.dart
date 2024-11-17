@@ -18,8 +18,15 @@ class IvsStagePlayerView extends StatefulWidget {
 class _IvsStagePlayerViewState extends State<IvsStagePlayerView> {
   final MethodChannel mainChannel = const MethodChannel("ivs_stage_method");
   final EventChannel renderEventChannel = const EventChannel("ivs_stage_event");
+  StreamSubscription? renderSubscription;
 
   bool isLoading = true;
+
+  @override
+  void dispose() {
+    renderSubscription?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,9 +37,10 @@ class _IvsStagePlayerViewState extends State<IvsStagePlayerView> {
             viewType: 'ivs_stage_player',
             onPlatformViewCreated: (id) async {
               await mainChannel.invokeMethod("join", widget.token);
-              renderEventChannel.receiveBroadcastStream().listen(
+              renderSubscription =
+                  renderEventChannel.receiveBroadcastStream().listen(
                 (event) {
-                  print("ivs_stage_event: " + event);
+                  print("ivs_stage_event: " + event.toString());
                 },
               );
               setState(() {
@@ -64,4 +72,8 @@ class _IvsStagePlayerViewState extends State<IvsStagePlayerView> {
       ),
     );
   }
+}
+
+class IvsStagePlayerController {
+  final MethodChannel mainChannel = const MethodChannel("ivs_stage_method");
 }

@@ -101,6 +101,9 @@ public class IVSStagePlayerView implements PlatformView, MethodChannel.MethodCal
             case "join":
                 initializeWithJoin(methodCall, result);
                 break;
+            case "leave":
+                leave(methodCall, result);
+                break;
             default:
                 result.notImplemented();
         }
@@ -144,6 +147,18 @@ public class IVSStagePlayerView implements PlatformView, MethodChannel.MethodCal
             return;
         }
         result.success("Failed to init stage");
+    }
+
+    private void leave(MethodCall methodCall, @NonNull MethodChannel.Result result) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            stage.leave();
+            renderEventMap.put("is_joined", false);
+            if (renderStreamSink != null)
+                renderStreamSink.success(renderEventMap);
+            result.success("Success");
+            return;
+        }
+        result.success("Failed to leave stage");
     }
 
     // Flutter dispose
