@@ -60,7 +60,7 @@ class _IvsStagePlayerViewState extends State<IvsStagePlayerView> {
       return Stack(
         children: [
           UiKitView(
-            viewType: 'ivs_stage_player',
+            viewType: 'ios_ivs_stage_player',
             onPlatformViewCreated: (id) async {
               await mainChannel.invokeMethod("join", widget.token);
               renderSubscription =
@@ -69,6 +69,7 @@ class _IvsStagePlayerViewState extends State<IvsStagePlayerView> {
                   print("ivs_stage_event: " + event.toString());
                 },
               );
+              print("Stage something went wrong");
               setState(() {
                 isLoading = false;
               });

@@ -231,14 +231,15 @@ public class IVSStagePlayerView implements PlatformView, MethodChannel.MethodCal
     public void onStreamsAdded(@NonNull Stage stage, @NonNull ParticipantInfo participantInfo, @NonNull List<StageStream> streams) {
         StageRenderer.super.onStreamsAdded(stage, participantInfo, streams);
         Log.d("Stage onStreamsAdded", streams.toString());
-        if (!streams.isEmpty()) {
-            previewView = streams.get(1).getPreview();
-            if (previewView != null) {
+        for (int i = 0; i < streams.size(); i++) {
+            if (streams.get(i).getStreamType() == StageStream.Type.VIDEO) {
                 surfaceView.setVisibility(View.GONE);
-                ((ViewGroup) surfaceView.getParent()).addView(previewView);
+                ((ViewGroup) surfaceView.getParent()).addView(streams.get(i).getPreviewSurfaceView());
                 surfaceView.setVisibility(View.VISIBLE);
+                Log.d("Stage", "preview setted");
             }
         }
+
         renderEventMap.put("stream_added", streams.size());
         if (renderStreamSink != null)
             renderStreamSink.success(renderEventMap);
@@ -260,7 +261,6 @@ public class IVSStagePlayerView implements PlatformView, MethodChannel.MethodCal
         renderEventMap.put("stream_mute", streams.size());
         if (renderStreamSink != null)
             renderStreamSink.success(renderEventMap);
-
     }
 
     // Strategy
