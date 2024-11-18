@@ -57,9 +57,30 @@ class _IvsStagePlayerViewState extends State<IvsStagePlayerView> {
         ],
       );
     } else if (Platform.isIOS) {
-      return UiKitView(
-        viewType: 'ivs_player',
-        onPlatformViewCreated: (id) async {},
+      return Stack(
+        children: [
+          UiKitView(
+            viewType: 'ivs_stage_player',
+            onPlatformViewCreated: (id) async {
+              await mainChannel.invokeMethod("join", widget.token);
+              renderSubscription =
+                  renderEventChannel.receiveBroadcastStream().listen(
+                (event) {
+                  print("ivs_stage_event: " + event.toString());
+                },
+              );
+              setState(() {
+                isLoading = false;
+              });
+            },
+          ),
+          if (isLoading)
+            Container(
+              color: Colors.black38,
+              alignment: Alignment.center,
+              child: const CircularProgressIndicator(),
+            )
+        ],
       );
     }
     return const Center(

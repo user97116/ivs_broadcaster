@@ -143,6 +143,7 @@ public class IVSStagePlayerView implements PlatformView, MethodChannel.MethodCal
                     renderStreamSink.success(renderEventMap);
                 ;
             }
+
             result.success("Success");
             return;
         }
@@ -158,7 +159,8 @@ public class IVSStagePlayerView implements PlatformView, MethodChannel.MethodCal
             result.success("Success");
             return;
         }
-        result.success("Failed to leave stage");
+        if (renderStreamSink != null)
+            result.success("Failed to leave stage");
     }
 
     // Flutter dispose
@@ -177,7 +179,8 @@ public class IVSStagePlayerView implements PlatformView, MethodChannel.MethodCal
         StageRenderer.super.onError(exception);
         Log.d("Stage onError", exception.toString());
         renderEventMap.put("error", exception.getMessage());
-        renderStreamSink.success(renderEventMap);
+        if (renderStreamSink != null)
+            renderStreamSink.success(renderEventMap);
     }
 
     @Override
@@ -220,7 +223,8 @@ public class IVSStagePlayerView implements PlatformView, MethodChannel.MethodCal
         StageRenderer.super.onParticipantSubscribeStateChanged(stage, publishingParticipantInfo, subscribeState);
         Log.d("Stage subscribe statte", subscribeState.name());
         renderEventMap.put("subscribe_changed", publishingParticipantInfo.participantId);
-        renderStreamSink.success(renderEventMap);
+        if (renderStreamSink != null)
+            renderStreamSink.success(renderEventMap);
     }
 
     @Override
@@ -236,7 +240,8 @@ public class IVSStagePlayerView implements PlatformView, MethodChannel.MethodCal
             }
         }
         renderEventMap.put("stream_added", streams.size());
-        renderStreamSink.success(renderEventMap);
+        if (renderStreamSink != null)
+            renderStreamSink.success(renderEventMap);
     }
 
     @Override
@@ -244,7 +249,8 @@ public class IVSStagePlayerView implements PlatformView, MethodChannel.MethodCal
         StageRenderer.super.onStreamsRemoved(stage, participantInfo, streams);
         Log.d("Stage onStreamsRemoved", participantInfo.toString());
         renderEventMap.put("stream_removed", streams.size());
-        renderStreamSink.success(renderEventMap);
+        if (renderStreamSink != null)
+            renderStreamSink.success(renderEventMap);
     }
 
     @Override
@@ -252,7 +258,8 @@ public class IVSStagePlayerView implements PlatformView, MethodChannel.MethodCal
         StageRenderer.super.onStreamsMutedChanged(stage, participantInfo, streams);
         Log.d("Stage onSdChanged", participantInfo.toString());
         renderEventMap.put("stream_mute", streams.size());
-        renderStreamSink.success(renderEventMap);
+        if (renderStreamSink != null)
+            renderStreamSink.success(renderEventMap);
 
     }
 
