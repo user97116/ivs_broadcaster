@@ -194,7 +194,8 @@ public class IVSStagePlayerView implements PlatformView, MethodChannel.MethodCal
         StageRenderer.super.onParticipantJoined(stage, participantInfo);
         Log.d("Stage onPaJoined", participantInfo.participantId);
         renderEventMap.put("joined", participantInfo.participantId);
-        renderStreamSink.success(renderEventMap);
+        if (renderStreamSink != null)
+            renderStreamSink.success(renderEventMap);
     }
 
     @Override
@@ -210,7 +211,8 @@ public class IVSStagePlayerView implements PlatformView, MethodChannel.MethodCal
         StageRenderer.super.onParticipantPublishStateChanged(stage, participantInfo, publishState);
         Log.d("Stage publish status c", publishState.name());
         renderEventMap.put("publish_changed", participantInfo.participantId);
-        renderStreamSink.success(renderEventMap);
+        if (renderStreamSink != null)
+            renderStreamSink.success(renderEventMap);
     }
 
     @Override
