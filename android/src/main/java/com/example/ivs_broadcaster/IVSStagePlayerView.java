@@ -206,7 +206,8 @@ public class IVSStagePlayerView implements PlatformView, MethodChannel.MethodCal
         StageRenderer.super.onParticipantLeft(stage, participantInfo);
         Log.d("Stage onPartLeft", participantInfo.toString());
         renderEventMap.put("left", participantInfo.participantId);
-        renderStreamSink.success(renderEventMap);
+        if (renderStreamSink != null)
+            renderStreamSink.success(renderEventMap);
     }
 
     @Override
