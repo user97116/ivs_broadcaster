@@ -46,8 +46,10 @@ public class IvsStagePlayerView: NSObject, FlutterPlatformView {
     
     private func join(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         do {
-            let token = call.arguments as? String;
-            stage = try IVSStage(token: token!, strategy: self)
+//            let token = call.arguments as? String;
+            let token = "eyJhbGciOiJLTVMiLCJ0eXAiOiJKV1QifQ.eyJleHAiOjE3MzIyMjM2MTIsImlhdCI6MTczMjE4MDQxMiwianRpIjoibGtPT3JVSmx3UVhRIiwicmVzb3VyY2UiOiJhcm46YXdzOml2czphcC1zb3V0aC0xOjI5ODYzOTcxMjAzMjpzdGFnZS9EWVcxcjd4M20xSGQiLCJ0b3BpYyI6IkRZVzFyN3gzbTFIZCIsImV2ZW50c191cmwiOiJ3c3M6Ly9nbG9iYWwuZXZlbnRzLmxpdmUtdmlkZW8ubmV0Iiwid2hpcF91cmwiOiJodHRwczovLzdkNzdlNDI1NDVkYy5nbG9iYWwtYm0ud2hpcC5saXZlLXZpZGVvLm5ldCIsInVzZXJfaWQiOiJhbWFyIiwiY2FwYWJpbGl0aWVzIjp7ImFsbG93X3B1Ymxpc2giOnRydWUsImFsbG93X3N1YnNjcmliZSI6dHJ1ZX0sInZlcnNpb24iOiIwLjAifQ.MGYCMQDSfSnWugF-nEBreMdwoomEXEwa5OIo9pQ3D5efiye-7qrFN9nM3ySjl3nvEFuxcw8CMQC5hGX2OJsv3Okaya3MmU9HCl46FFTbAo80pBhtCgYhZtRqLgZriCoaABqKZB7V1-Y";
+            
+            stage = try IVSStage(token: token, strategy: self)
             stage?.addRenderer(self);
             try stage?.join()
             hashMap["is_joined"] = true;
@@ -111,7 +113,22 @@ extension IvsStagePlayerView: IVSStageStrategy {
     }
     public func stage(_ stage: IVSStage, streamsToPublishForParticipant participant: IVSParticipantInfo) -> [IVSLocalStageStream] {
         print("IVSStage streamsToPublishForParticipant")
-        return []
+        let devices = IVSDeviceDiscovery().listLocalDevices()
+
+        // Find the camera virtual device, choose the front source, and create a stream
+        let camera = devices.compactMap({ $0 as? IVSCamera }).first!
+        let frontSource = camera.listAvailableInputSources().first(where: { $0.position == .front })!
+        camera.setPreferredInputSource(frontSource)
+        let cameraStream = IVSLocalStageStream(device: camera)
+
+        // Find the microphone virtual device and create a stream
+        let microphone = devices.compactMap({ $0 as? IVSMicrophone }).first!
+        let microphoneStream = IVSLocalStageStream(device: microphone)
+
+        // Configure the audio manager to use the videoChat preset, which is optimized for bi-directional communication, including echo cancellation.
+        IVSStageAudioManager.sharedInstance().setPreset(.videoChat)
+
+        return [cameraStream, microphoneStream]
     }
 }
 extension IvsStagePlayerView: IVSStageRenderer {

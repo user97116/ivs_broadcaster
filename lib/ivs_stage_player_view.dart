@@ -7,16 +7,15 @@ import 'package:flutter/services.dart';
 class IvsStagePlayerView extends StatefulWidget {
   const IvsStagePlayerView({
     Key? key,
-    required this.token,
+    required this.controller,
   }) : super(key: key);
-  final String token;
+  final IvsStagePlayerController controller;
 
   @override
   State<IvsStagePlayerView> createState() => _IvsStagePlayerViewState();
 }
 
 class _IvsStagePlayerViewState extends State<IvsStagePlayerView> {
-  final MethodChannel mainChannel = const MethodChannel("ivs_stage_method");
   final EventChannel renderEventChannel = const EventChannel("ivs_stage_event");
   StreamSubscription? renderSubscription;
 
@@ -36,7 +35,7 @@ class _IvsStagePlayerViewState extends State<IvsStagePlayerView> {
           AndroidView(
             viewType: 'ivs_stage_player',
             onPlatformViewCreated: (id) async {
-              await mainChannel.invokeMethod("join", widget.token);
+              await widget.controller.join();
               renderSubscription =
                   renderEventChannel.receiveBroadcastStream().listen(
                 (event) {
@@ -62,7 +61,7 @@ class _IvsStagePlayerViewState extends State<IvsStagePlayerView> {
           UiKitView(
             viewType: 'ios_ivs_stage_player',
             onPlatformViewCreated: (id) async {
-              await mainChannel.invokeMethod("join", widget.token);
+              await widget.controller.join();
               renderSubscription =
                   renderEventChannel.receiveBroadcastStream().listen(
                 (event) {
@@ -97,5 +96,14 @@ class _IvsStagePlayerViewState extends State<IvsStagePlayerView> {
 }
 
 class IvsStagePlayerController {
-  final MethodChannel mainChannel = const MethodChannel("ivs_stage_method");
+  final MethodChannel _mainChannel = const MethodChannel("ivs_stage_method");
+
+  IvsStagePlayerController(String token) {
+    _token = token;
+  }
+  late String _token;
+
+  Future<void> join() => _mainChannel.invokeMethod("join", _token);
+  Future<void> leave() => _mainChannel.invokeMethod("leave");
+  Future<void> publish() => _mainChannel.invokeMethod("publish");
 }

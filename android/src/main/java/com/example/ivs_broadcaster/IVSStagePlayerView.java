@@ -1,6 +1,9 @@
 package com.example.ivs_broadcaster;
 
+import static com.amazonaws.ivs.broadcast.BroadcastConfiguration.*;
+
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.os.Build;
 import android.util.Log;
 import android.view.Surface;
@@ -13,16 +16,28 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
+import com.amazonaws.ivs.broadcast.AudioLocalStageStream;
+import com.amazonaws.ivs.broadcast.AudioStageStream;
+import com.amazonaws.ivs.broadcast.BroadcastConfiguration;
 import com.amazonaws.ivs.broadcast.BroadcastException;
+import com.amazonaws.ivs.broadcast.CameraSource;
+import com.amazonaws.ivs.broadcast.Device;
+import com.amazonaws.ivs.broadcast.DeviceDiscovery;
+import com.amazonaws.ivs.broadcast.ImageDevice;
+import com.amazonaws.ivs.broadcast.ImageLocalStageStream;
 import com.amazonaws.ivs.broadcast.ImagePreviewView;
+import com.amazonaws.ivs.broadcast.ImageStageStream;
 import com.amazonaws.ivs.broadcast.JitterBufferConfiguration;
 import com.amazonaws.ivs.broadcast.LocalStageStream;
 import com.amazonaws.ivs.broadcast.ParticipantInfo;
 import com.amazonaws.ivs.broadcast.Stage;
+import com.amazonaws.ivs.broadcast.StageAudioConfiguration;
 import com.amazonaws.ivs.broadcast.StageRenderer;
 import com.amazonaws.ivs.broadcast.StageStream;
+import com.amazonaws.ivs.broadcast.StageVideoConfiguration;
 import com.amazonaws.ivs.broadcast.SubscribeConfiguration;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -49,7 +64,48 @@ public class IVSStagePlayerView implements PlatformView, MethodChannel.MethodCal
 
     //
     HashMap renderEventMap = new HashMap();
+    List<LocalStageStream> publishStreams = new ArrayList<LocalStageStream>();
 
+    // IVS Stage Broadcaster
+   void publishIvsStage(MethodCall methodCall, @NonNull MethodChannel.Result result) {
+        if(stage == null) {
+            publishStreams.clear();
+        }
+        publishStreams.clear();
+
+        DeviceDiscovery deviceDiscovery = new DeviceDiscovery(context);
+        List<Device> devices = deviceDiscovery.listLocalDevices();
+
+        Device frontCamera = null;
+        Device microphone = null;
+        // Create streams using the front camera, first microphone
+        for (Device device : devices) {
+            Log.d("amar_live", device.getTag().toString());
+            Device.Descriptor descriptor = device.getDescriptor();
+            if (frontCamera == null && descriptor.type == Device.Descriptor.DeviceType.CAMERA && descriptor.position == Device.Descriptor.Position.BACK) {
+                frontCamera = device;
+                ImageLocalStageStream cameraStream = new ImageLocalStageStream(frontCamera);
+                StageVideoConfiguration videoConfiguration = new StageVideoConfiguration();
+                videoConfiguration.setSize(new BroadcastConfiguration.Vec2(1080f, 720f));
+                videoConfiguration.setCameraCaptureQuality(30, new BroadcastConfiguration.Vec2(1080f, 720f));
+                videoConfiguration.simulcast.setEnabled(false);
+                videoConfiguration.setDegradationPreference(StageVideoConfiguration.DegradationPreference.BALANCED);
+                cameraStream.setVideoConfiguration(videoConfiguration);
+                publishStreams.add(cameraStream);
+            }
+            if (microphone == null && descriptor.type == Device.Descriptor.DeviceType.MICROPHONE) {
+                microphone = device;
+                AudioLocalStageStream microphoneStream = new AudioLocalStageStream(microphone);
+                final StageAudioConfiguration audioConfiguration = new StageAudioConfiguration();
+                audioConfiguration.enableEchoCancellation(true);
+                microphoneStream.setAudioConfiguration(audioConfiguration);
+                publishStreams.add(microphoneStream);
+            }
+        }
+        Log.d("amar_live", String.valueOf(publishStreams.size()));
+        result.success("Exited");
+    }
+//
 
     IVSStagePlayerView(Context context, BinaryMessenger messenger) {
         surfaceView = new SurfaceView(context);
@@ -104,6 +160,9 @@ public class IVSStagePlayerView implements PlatformView, MethodChannel.MethodCal
             case "leave":
                 leave(methodCall, result);
                 break;
+            case "publish":
+                publishIvsStage(methodCall, result);
+                break;
             default:
                 result.notImplemented();
         }
@@ -127,7 +186,9 @@ public class IVSStagePlayerView implements PlatformView, MethodChannel.MethodCal
 
     // Flutter
     private void initializeWithJoin(MethodCall methodCall, @NonNull MethodChannel.Result result) {
-        String token = (String) methodCall.arguments;
+//        String token = (String) methodCall.arguments;
+        String token = "eyJhbGciOiJLTVMiLCJ0eXAiOiJKV1QifQ.eyJleHAiOjE3MzIyMjM2MTIsImlhdCI6MTczMjE4MDQxMiwianRpIjoibGtPT3JVSmx3UVhRIiwicmVzb3VyY2UiOiJhcm46YXdzOml2czphcC1zb3V0aC0xOjI5ODYzOTcxMjAzMjpzdGFnZS9EWVcxcjd4M20xSGQiLCJ0b3BpYyI6IkRZVzFyN3gzbTFIZCIsImV2ZW50c191cmwiOiJ3c3M6Ly9nbG9iYWwuZXZlbnRzLmxpdmUtdmlkZW8ubmV0Iiwid2hpcF91cmwiOiJodHRwczovLzdkNzdlNDI1NDVkYy5nbG9iYWwtYm0ud2hpcC5saXZlLXZpZGVvLm5ldCIsInVzZXJfaWQiOiJhbWFyIiwiY2FwYWJpbGl0aWVzIjp7ImFsbG93X3B1Ymxpc2giOnRydWUsImFsbG93X3N1YnNjcmliZSI6dHJ1ZX0sInZlcnNpb24iOiIwLjAifQ.MGYCMQDSfSnWugF-nEBreMdwoomEXEwa5OIo9pQ3D5efiye-7qrFN9nM3ySjl3nvEFuxcw8CMQC5hGX2OJsv3Okaya3MmU9HCl46FFTbAo80pBhtCgYhZtRqLgZriCoaABqKZB7V1-Y";
+        Log.d("Stage", token);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && token != null) {
             stage = new Stage(context, token, this);
             stage.addRenderer(this);
@@ -199,6 +260,8 @@ public class IVSStagePlayerView implements PlatformView, MethodChannel.MethodCal
         renderEventMap.put("joined", participantInfo.participantId);
         if (renderStreamSink != null)
             renderStreamSink.success(renderEventMap);
+
+        participantInfo.capabilities.add(ParticipantInfo.Capabilities.SUBSCRIBE);
     }
 
     @Override
@@ -277,8 +340,10 @@ public class IVSStagePlayerView implements PlatformView, MethodChannel.MethodCal
     @Override
     public List<LocalStageStream> stageStreamsToPublishForParticipant(@NonNull Stage stage, @NonNull ParticipantInfo participantInfo) {
         Log.d("Stage", "stageStreamsToPublishForParticipant");
-        return Collections.emptyList();
+//        return Collections.emptyList();
+        return publishStreams;
     }
+
 
     @Override
     public boolean shouldPublishFromParticipant(@NonNull Stage stage, @NonNull ParticipantInfo participantInfo) {
