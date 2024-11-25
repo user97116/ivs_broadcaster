@@ -100,6 +100,7 @@ class IvsStagePlayerController {
 
   IvsStagePlayerController(String token) {
     _token = token;
+    print("ivstoken is $token");
   }
   late String _token;
 

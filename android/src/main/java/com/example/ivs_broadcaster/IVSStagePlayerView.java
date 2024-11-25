@@ -3,7 +3,6 @@ package com.example.ivs_broadcaster;
 import static com.amazonaws.ivs.broadcast.BroadcastConfiguration.*;
 
 import android.content.Context;
-import android.content.pm.ActivityInfo;
 import android.os.Build;
 import android.util.Log;
 import android.view.Surface;
@@ -17,16 +16,12 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
 import com.amazonaws.ivs.broadcast.AudioLocalStageStream;
-import com.amazonaws.ivs.broadcast.AudioStageStream;
 import com.amazonaws.ivs.broadcast.BroadcastConfiguration;
 import com.amazonaws.ivs.broadcast.BroadcastException;
-import com.amazonaws.ivs.broadcast.CameraSource;
 import com.amazonaws.ivs.broadcast.Device;
 import com.amazonaws.ivs.broadcast.DeviceDiscovery;
-import com.amazonaws.ivs.broadcast.ImageDevice;
 import com.amazonaws.ivs.broadcast.ImageLocalStageStream;
 import com.amazonaws.ivs.broadcast.ImagePreviewView;
-import com.amazonaws.ivs.broadcast.ImageStageStream;
 import com.amazonaws.ivs.broadcast.JitterBufferConfiguration;
 import com.amazonaws.ivs.broadcast.LocalStageStream;
 import com.amazonaws.ivs.broadcast.ParticipantInfo;
@@ -47,16 +42,19 @@ import io.flutter.plugin.common.EventChannel;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.platform.PlatformView;
+import io.flutter.plugin.platform.PlatformViewFactory;
+import io.flutter.plugin.platform.PlatformViewRegistry;
 
 @RequiresApi(api = Build.VERSION_CODES.P)
 public class IVSStagePlayerView implements PlatformView, MethodChannel.MethodCallHandler, SurfaceHolder.Callback, StageRenderer, Stage.Strategy {
     private static final String TAG = "StageView";
+    private final PlatformViewRegistry platformViewRegistry;
+    private final BinaryMessenger messenger;
 
     private final SurfaceView surfaceView;
     private Surface surface;
     private EventChannel renderStreamChannel;
     private EventChannel.EventSink renderStreamSink;
-    private ImagePreviewView previewView;
 
     //
     private Stage stage = null;
@@ -64,34 +62,35 @@ public class IVSStagePlayerView implements PlatformView, MethodChannel.MethodCal
 
     //
     HashMap renderEventMap = new HashMap();
-    List<LocalStageStream> publishStreams = new ArrayList<LocalStageStream>();
+    List<LocalStageStream> localStageStreams = new ArrayList<LocalStageStream>();
 
-    // IVS Stage Broadcaster
-   void publishIvsStage(MethodCall methodCall, @NonNull MethodChannel.Result result) {
-        if(stage == null) {
-            publishStreams.clear();
-        }
-        publishStreams.clear();
 
+    List<LocalStageStream> getLocalStageStreams() {
         DeviceDiscovery deviceDiscovery = new DeviceDiscovery(context);
         List<Device> devices = deviceDiscovery.listLocalDevices();
 
+        localStageStreams.clear();
         Device frontCamera = null;
         Device microphone = null;
         // Create streams using the front camera, first microphone
         for (Device device : devices) {
             Log.d("amar_live", device.getTag().toString());
             Device.Descriptor descriptor = device.getDescriptor();
-            if (frontCamera == null && descriptor.type == Device.Descriptor.DeviceType.CAMERA && descriptor.position == Device.Descriptor.Position.BACK) {
+            Log.d("amar_live 1", String.valueOf(descriptor.position));
+
+            if (frontCamera == null && descriptor.type == Device.Descriptor.DeviceType.CAMERA && descriptor.position == Device.Descriptor.Position.FRONT) {
                 frontCamera = device;
                 ImageLocalStageStream cameraStream = new ImageLocalStageStream(frontCamera);
                 StageVideoConfiguration videoConfiguration = new StageVideoConfiguration();
-                videoConfiguration.setSize(new BroadcastConfiguration.Vec2(1080f, 720f));
-                videoConfiguration.setCameraCaptureQuality(30, new BroadcastConfiguration.Vec2(1080f, 720f));
+                Vec2 size = new Vec2(1280f, 720f);
+                videoConfiguration.setSize(size);
+                videoConfiguration.setCameraCaptureQuality(30, size);
                 videoConfiguration.simulcast.setEnabled(false);
-                videoConfiguration.setDegradationPreference(StageVideoConfiguration.DegradationPreference.BALANCED);
+                videoConfiguration.setDegradationPreference(StageVideoConfiguration.DegradationPreference.MAINTAIN_RESOLUTION);
                 cameraStream.setVideoConfiguration(videoConfiguration);
-                publishStreams.add(cameraStream);
+                localStageStreams.add(cameraStream);
+                Log.d("amar_live", "Stage stream attahed");
+
             }
             if (microphone == null && descriptor.type == Device.Descriptor.DeviceType.MICROPHONE) {
                 microphone = device;
@@ -99,20 +98,20 @@ public class IVSStagePlayerView implements PlatformView, MethodChannel.MethodCal
                 final StageAudioConfiguration audioConfiguration = new StageAudioConfiguration();
                 audioConfiguration.enableEchoCancellation(true);
                 microphoneStream.setAudioConfiguration(audioConfiguration);
-                publishStreams.add(microphoneStream);
+                localStageStreams.add(microphoneStream);
             }
         }
-        Log.d("amar_live", String.valueOf(publishStreams.size()));
-        result.success("Exited");
+        return localStageStreams;
     }
-//
 
-    IVSStagePlayerView(Context context, BinaryMessenger messenger) {
+    IVSStagePlayerView(PlatformViewRegistry platformViewRegistry, Context context, BinaryMessenger messenger) {
+        this.platformViewRegistry = platformViewRegistry;
+        this.context = context;
+        this.messenger = messenger;
         surfaceView = new SurfaceView(context);
         MethodChannel methodChannel = new MethodChannel(messenger, "ivs_stage_method");
         renderStreamChannel = new EventChannel(messenger, "ivs_stage_event");
         methodChannel.setMethodCallHandler(this);
-        this.context = context;
     }
 
     @Override
@@ -160,9 +159,6 @@ public class IVSStagePlayerView implements PlatformView, MethodChannel.MethodCal
             case "leave":
                 leave(methodCall, result);
                 break;
-            case "publish":
-                publishIvsStage(methodCall, result);
-                break;
             default:
                 result.notImplemented();
         }
@@ -186,8 +182,8 @@ public class IVSStagePlayerView implements PlatformView, MethodChannel.MethodCal
 
     // Flutter
     private void initializeWithJoin(MethodCall methodCall, @NonNull MethodChannel.Result result) {
-//        String token = (String) methodCall.arguments;
-        String token = "eyJhbGciOiJLTVMiLCJ0eXAiOiJKV1QifQ.eyJleHAiOjE3MzIyMjM2MTIsImlhdCI6MTczMjE4MDQxMiwianRpIjoibGtPT3JVSmx3UVhRIiwicmVzb3VyY2UiOiJhcm46YXdzOml2czphcC1zb3V0aC0xOjI5ODYzOTcxMjAzMjpzdGFnZS9EWVcxcjd4M20xSGQiLCJ0b3BpYyI6IkRZVzFyN3gzbTFIZCIsImV2ZW50c191cmwiOiJ3c3M6Ly9nbG9iYWwuZXZlbnRzLmxpdmUtdmlkZW8ubmV0Iiwid2hpcF91cmwiOiJodHRwczovLzdkNzdlNDI1NDVkYy5nbG9iYWwtYm0ud2hpcC5saXZlLXZpZGVvLm5ldCIsInVzZXJfaWQiOiJhbWFyIiwiY2FwYWJpbGl0aWVzIjp7ImFsbG93X3B1Ymxpc2giOnRydWUsImFsbG93X3N1YnNjcmliZSI6dHJ1ZX0sInZlcnNpb24iOiIwLjAifQ.MGYCMQDSfSnWugF-nEBreMdwoomEXEwa5OIo9pQ3D5efiye-7qrFN9nM3ySjl3nvEFuxcw8CMQC5hGX2OJsv3Okaya3MmU9HCl46FFTbAo80pBhtCgYhZtRqLgZriCoaABqKZB7V1-Y";
+        String token ="eyJhbGciOiJLTVMiLCJ0eXAiOiJKV1QifQ.eyJleHAiOjE3MzM0NjkzNTIsImlhdCI6MTczMjI1OTc1MiwianRpIjoiSkk3TURtTm4yRGMyIiwicmVzb3VyY2UiOiJhcm46YXdzOml2czphcC1zb3V0aC0xOjI5ODYzOTcxMjAzMjpzdGFnZS9EWVcxcjd4M20xSGQiLCJ0b3BpYyI6IkRZVzFyN3gzbTFIZCIsImV2ZW50c191cmwiOiJ3c3M6Ly9nbG9iYWwuZXZlbnRzLmxpdmUtdmlkZW8ubmV0Iiwid2hpcF91cmwiOiJodHRwczovLzdkNzdlNDI1NDVkYy5nbG9iYWwtYm0ud2hpcC5saXZlLXZpZGVvLm5ldCIsInVzZXJfaWQiOiJzdWJzY3JpYmVyIiwiY2FwYWJpbGl0aWVzIjp7ImFsbG93X3B1Ymxpc2giOnRydWUsImFsbG93X3N1YnNjcmliZSI6dHJ1ZX0sInZlcnNpb24iOiIwLjAifQ.MGQCMHY4x1t9flXOroLPjZUZ7ulrPG8eubOJDoiOiysA9RVq4OhSRQ2iPaXmlyjtVhw7EgIwEJCFo7lF28iAlsu1GWI3_kh1pzkLvPfOZaEUJ4cAe8grXEERhNLO8y5KEAQOr8Sg";
+//        (String) methodCall.arguments;
         Log.d("Stage", token);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && token != null) {
             stage = new Stage(context, token, this);
@@ -195,13 +191,11 @@ public class IVSStagePlayerView implements PlatformView, MethodChannel.MethodCal
             try {
                 stage.join();
                 renderEventMap.put("is_joined", true);
-                if (renderStreamSink != null)
-                    renderStreamSink.success(renderEventMap);
+                if (renderStreamSink != null) renderStreamSink.success(renderEventMap);
             } catch (Exception e) {
                 Log.d("Stage joined failed", e.getMessage());
                 renderEventMap.put("is_joined", false);
-                if (renderStreamSink != null)
-                    renderStreamSink.success(renderEventMap);
+                if (renderStreamSink != null) renderStreamSink.success(renderEventMap);
                 ;
             }
 
@@ -215,23 +209,19 @@ public class IVSStagePlayerView implements PlatformView, MethodChannel.MethodCal
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             stage.leave();
             renderEventMap.put("is_joined", false);
-            if (renderStreamSink != null)
-                renderStreamSink.success(renderEventMap);
+            if (renderStreamSink != null) renderStreamSink.success(renderEventMap);
             result.success("Success");
             return;
         }
-        if (renderStreamSink != null)
-            result.success("Failed to leave stage");
+        if (renderStreamSink != null) result.success("Failed to leave stage");
     }
 
     // Flutter dispose
     private void destroy() {
         stage.leave();
-        stage.release();
-        stage.removeRenderer(this);
-        if (surface != null) {
-            surface.release();
-        }
+//        if (surface != null) {
+//            surface.release();
+//        }
     }
 
     // Render
@@ -240,8 +230,7 @@ public class IVSStagePlayerView implements PlatformView, MethodChannel.MethodCal
         StageRenderer.super.onError(exception);
         Log.d("Stage onError", exception.toString());
         renderEventMap.put("error", exception.getMessage());
-        if (renderStreamSink != null)
-            renderStreamSink.success(renderEventMap);
+        if (renderStreamSink != null) renderStreamSink.success(renderEventMap);
     }
 
     @Override
@@ -249,8 +238,7 @@ public class IVSStagePlayerView implements PlatformView, MethodChannel.MethodCal
         StageRenderer.super.onConnectionStateChanged(stage, state, exception);
         Log.d("Stage onCtateChanged", state.toString());
         renderEventMap.put("state_changed", state.toString());
-        if (renderStreamSink != null)
-            renderStreamSink.success(renderEventMap);
+        if (renderStreamSink != null) renderStreamSink.success(renderEventMap);
     }
 
     @Override
@@ -258,8 +246,7 @@ public class IVSStagePlayerView implements PlatformView, MethodChannel.MethodCal
         StageRenderer.super.onParticipantJoined(stage, participantInfo);
         Log.d("Stage onPaJoined", participantInfo.participantId);
         renderEventMap.put("joined", participantInfo.participantId);
-        if (renderStreamSink != null)
-            renderStreamSink.success(renderEventMap);
+        if (renderStreamSink != null) renderStreamSink.success(renderEventMap);
 
         participantInfo.capabilities.add(ParticipantInfo.Capabilities.SUBSCRIBE);
     }
@@ -269,8 +256,7 @@ public class IVSStagePlayerView implements PlatformView, MethodChannel.MethodCal
         StageRenderer.super.onParticipantLeft(stage, participantInfo);
         Log.d("Stage onPartLeft", participantInfo.toString());
         renderEventMap.put("left", participantInfo.participantId);
-        if (renderStreamSink != null)
-            renderStreamSink.success(renderEventMap);
+        if (renderStreamSink != null) renderStreamSink.success(renderEventMap);
     }
 
     @Override
@@ -278,8 +264,7 @@ public class IVSStagePlayerView implements PlatformView, MethodChannel.MethodCal
         StageRenderer.super.onParticipantPublishStateChanged(stage, participantInfo, publishState);
         Log.d("Stage publish status c", publishState.name());
         renderEventMap.put("publish_changed", participantInfo.participantId);
-        if (renderStreamSink != null)
-            renderStreamSink.success(renderEventMap);
+        if (renderStreamSink != null) renderStreamSink.success(renderEventMap);
     }
 
     @Override
@@ -287,8 +272,7 @@ public class IVSStagePlayerView implements PlatformView, MethodChannel.MethodCal
         StageRenderer.super.onParticipantSubscribeStateChanged(stage, publishingParticipantInfo, subscribeState);
         Log.d("Stage subscribe statte", subscribeState.name());
         renderEventMap.put("subscribe_changed", publishingParticipantInfo.participantId);
-        if (renderStreamSink != null)
-            renderStreamSink.success(renderEventMap);
+        if (renderStreamSink != null) renderStreamSink.success(renderEventMap);
     }
 
     @Override
@@ -297,6 +281,7 @@ public class IVSStagePlayerView implements PlatformView, MethodChannel.MethodCal
         Log.d("Stage onStreamsAdded", streams.toString());
         for (int i = 0; i < streams.size(); i++) {
             if (streams.get(i).getStreamType() == StageStream.Type.VIDEO) {
+//                platformViewRegistry.registerViewFactory("ivs_stage_amar",new IVSStageVideoFactory(streams.get(i).getPreviewSurfaceView(),messenger));
                 surfaceView.setVisibility(View.GONE);
                 ((ViewGroup) surfaceView.getParent()).addView(streams.get(i).getPreviewSurfaceView());
                 surfaceView.setVisibility(View.VISIBLE);
@@ -305,17 +290,36 @@ public class IVSStagePlayerView implements PlatformView, MethodChannel.MethodCal
         }
 
         renderEventMap.put("stream_added", streams.size());
-        if (renderStreamSink != null)
-            renderStreamSink.success(renderEventMap);
+        if (renderStreamSink != null) renderStreamSink.success(renderEventMap);
     }
 
     @Override
     public void onStreamsRemoved(@NonNull Stage stage, @NonNull ParticipantInfo participantInfo, @NonNull List<StageStream> streams) {
         StageRenderer.super.onStreamsRemoved(stage, participantInfo, streams);
         Log.d("Stage onStreamsRemoved", participantInfo.toString());
+        Log.d("Stage onStreamsRemoved", participantInfo.userInfo.toString());
+        Log.d("Stage onStreamsRemoved", String.valueOf(participantInfo.isLocal));
         renderEventMap.put("stream_removed", streams.size());
-        if (renderStreamSink != null)
-            renderStreamSink.success(renderEventMap);
+
+        for (int i = 0; i < streams.size(); i++) {
+            StageStream stream = streams.get(i);
+            if (stream.getStreamType() == StageStream.Type.VIDEO && !participantInfo.isLocal) {
+                View previewSurfaceView = stream.getPreviewSurfaceView();
+                if (previewSurfaceView != null) {
+                    ViewGroup parent = (ViewGroup) previewSurfaceView.getParent();
+                    if (parent != null) {
+                        parent.removeView(previewSurfaceView);
+                        Log.d("Stage", "Preview surface removed for stream at index: " + i);
+                    } else {
+                        Log.w("Stage", "Parent view is null for preview surface at index: " + i);
+                    }
+                } else {
+                    Log.w("Stage", "Preview surface view is null for stream at index: " + i);
+                }
+            }
+        }
+
+        if (renderStreamSink != null) renderStreamSink.success(renderEventMap);
     }
 
     @Override
@@ -323,8 +327,7 @@ public class IVSStagePlayerView implements PlatformView, MethodChannel.MethodCal
         StageRenderer.super.onStreamsMutedChanged(stage, participantInfo, streams);
         Log.d("Stage onSdChanged", participantInfo.toString());
         renderEventMap.put("stream_mute", streams.size());
-        if (renderStreamSink != null)
-            renderStreamSink.success(renderEventMap);
+        if (renderStreamSink != null) renderStreamSink.success(renderEventMap);
     }
 
     // Strategy
@@ -340,8 +343,9 @@ public class IVSStagePlayerView implements PlatformView, MethodChannel.MethodCal
     @Override
     public List<LocalStageStream> stageStreamsToPublishForParticipant(@NonNull Stage stage, @NonNull ParticipantInfo participantInfo) {
         Log.d("Stage", "stageStreamsToPublishForParticipant");
+        Log.d("Stage 2", participantInfo.isLocal ? "local" : "no local");
 //        return Collections.emptyList();
-        return publishStreams;
+        return getLocalStageStreams();
     }
 
 
