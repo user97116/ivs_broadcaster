@@ -1,7 +1,6 @@
 package com.example.ivs_broadcaster;
 
-import static com.amazonaws.ivs.broadcast.BroadcastConfiguration.*;
-
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
 import android.util.Log;
@@ -13,26 +12,16 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 
-import com.amazonaws.ivs.broadcast.AudioLocalStageStream;
-import com.amazonaws.ivs.broadcast.BroadcastConfiguration;
 import com.amazonaws.ivs.broadcast.BroadcastException;
-import com.amazonaws.ivs.broadcast.Device;
-import com.amazonaws.ivs.broadcast.DeviceDiscovery;
-import com.amazonaws.ivs.broadcast.ImageLocalStageStream;
-import com.amazonaws.ivs.broadcast.ImagePreviewView;
 import com.amazonaws.ivs.broadcast.JitterBufferConfiguration;
 import com.amazonaws.ivs.broadcast.LocalStageStream;
 import com.amazonaws.ivs.broadcast.ParticipantInfo;
 import com.amazonaws.ivs.broadcast.Stage;
-import com.amazonaws.ivs.broadcast.StageAudioConfiguration;
 import com.amazonaws.ivs.broadcast.StageRenderer;
 import com.amazonaws.ivs.broadcast.StageStream;
-import com.amazonaws.ivs.broadcast.StageVideoConfiguration;
 import com.amazonaws.ivs.broadcast.SubscribeConfiguration;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -42,17 +31,12 @@ import io.flutter.plugin.common.EventChannel;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.platform.PlatformView;
-import io.flutter.plugin.platform.PlatformViewFactory;
-import io.flutter.plugin.platform.PlatformViewRegistry;
 
-@RequiresApi(api = Build.VERSION_CODES.P)
+@SuppressLint("NewApi")
 public class IVSStagePlayerView implements PlatformView, MethodChannel.MethodCallHandler, SurfaceHolder.Callback, StageRenderer, Stage.Strategy {
     private static final String TAG = "StageView";
-    private final PlatformViewRegistry platformViewRegistry;
-    private final BinaryMessenger messenger;
 
     private final SurfaceView surfaceView;
-    private Surface surface;
     private EventChannel renderStreamChannel;
     private EventChannel.EventSink renderStreamSink;
 
@@ -62,52 +46,9 @@ public class IVSStagePlayerView implements PlatformView, MethodChannel.MethodCal
 
     //
     HashMap renderEventMap = new HashMap();
-    List<LocalStageStream> localStageStreams = new ArrayList<LocalStageStream>();
 
-
-    List<LocalStageStream> getLocalStageStreams() {
-        DeviceDiscovery deviceDiscovery = new DeviceDiscovery(context);
-        List<Device> devices = deviceDiscovery.listLocalDevices();
-
-        localStageStreams.clear();
-        Device frontCamera = null;
-        Device microphone = null;
-        // Create streams using the front camera, first microphone
-        for (Device device : devices) {
-            Log.d("amar_live", device.getTag().toString());
-            Device.Descriptor descriptor = device.getDescriptor();
-            Log.d("amar_live 1", String.valueOf(descriptor.position));
-
-            if (frontCamera == null && descriptor.type == Device.Descriptor.DeviceType.CAMERA && descriptor.position == Device.Descriptor.Position.FRONT) {
-                frontCamera = device;
-                ImageLocalStageStream cameraStream = new ImageLocalStageStream(frontCamera);
-                StageVideoConfiguration videoConfiguration = new StageVideoConfiguration();
-                Vec2 size = new Vec2(1280f, 720f);
-                videoConfiguration.setSize(size);
-                videoConfiguration.setCameraCaptureQuality(30, size);
-                videoConfiguration.simulcast.setEnabled(false);
-                videoConfiguration.setDegradationPreference(StageVideoConfiguration.DegradationPreference.MAINTAIN_RESOLUTION);
-                cameraStream.setVideoConfiguration(videoConfiguration);
-                localStageStreams.add(cameraStream);
-                Log.d("amar_live", "Stage stream attahed");
-
-            }
-            if (microphone == null && descriptor.type == Device.Descriptor.DeviceType.MICROPHONE) {
-                microphone = device;
-                AudioLocalStageStream microphoneStream = new AudioLocalStageStream(microphone);
-                final StageAudioConfiguration audioConfiguration = new StageAudioConfiguration();
-                audioConfiguration.enableEchoCancellation(true);
-                microphoneStream.setAudioConfiguration(audioConfiguration);
-                localStageStreams.add(microphoneStream);
-            }
-        }
-        return localStageStreams;
-    }
-
-    IVSStagePlayerView(PlatformViewRegistry platformViewRegistry, Context context, BinaryMessenger messenger) {
-        this.platformViewRegistry = platformViewRegistry;
+    IVSStagePlayerView(Context context, BinaryMessenger messenger) {
         this.context = context;
-        this.messenger = messenger;
         surfaceView = new SurfaceView(context);
         MethodChannel methodChannel = new MethodChannel(messenger, "ivs_stage_method");
         renderStreamChannel = new EventChannel(messenger, "ivs_stage_event");
@@ -166,7 +107,6 @@ public class IVSStagePlayerView implements PlatformView, MethodChannel.MethodCal
 
     @Override
     public void surfaceCreated(@NonNull SurfaceHolder surfaceHolder) {
-        this.surface = surfaceHolder.getSurface();
         Log.d(TAG, "Surface created and player surface set.");
     }
 
@@ -176,13 +116,12 @@ public class IVSStagePlayerView implements PlatformView, MethodChannel.MethodCal
 
     @Override
     public void surfaceDestroyed(@NonNull SurfaceHolder surfaceHolder) {
-        this.surface = null;
         Log.d(TAG, "Surface destroyed and player surface cleared.");
     }
 
     // Flutter
     private void initializeWithJoin(MethodCall methodCall, @NonNull MethodChannel.Result result) {
-        String token ="eyJhbGciOiJLTVMiLCJ0eXAiOiJKV1QifQ.eyJleHAiOjE3MzM0NjkzNTIsImlhdCI6MTczMjI1OTc1MiwianRpIjoiSkk3TURtTm4yRGMyIiwicmVzb3VyY2UiOiJhcm46YXdzOml2czphcC1zb3V0aC0xOjI5ODYzOTcxMjAzMjpzdGFnZS9EWVcxcjd4M20xSGQiLCJ0b3BpYyI6IkRZVzFyN3gzbTFIZCIsImV2ZW50c191cmwiOiJ3c3M6Ly9nbG9iYWwuZXZlbnRzLmxpdmUtdmlkZW8ubmV0Iiwid2hpcF91cmwiOiJodHRwczovLzdkNzdlNDI1NDVkYy5nbG9iYWwtYm0ud2hpcC5saXZlLXZpZGVvLm5ldCIsInVzZXJfaWQiOiJzdWJzY3JpYmVyIiwiY2FwYWJpbGl0aWVzIjp7ImFsbG93X3B1Ymxpc2giOnRydWUsImFsbG93X3N1YnNjcmliZSI6dHJ1ZX0sInZlcnNpb24iOiIwLjAifQ.MGQCMHY4x1t9flXOroLPjZUZ7ulrPG8eubOJDoiOiysA9RVq4OhSRQ2iPaXmlyjtVhw7EgIwEJCFo7lF28iAlsu1GWI3_kh1pzkLvPfOZaEUJ4cAe8grXEERhNLO8y5KEAQOr8Sg";
+        String token = "eyJhbGciOiJLTVMiLCJ0eXAiOiJKV1QifQ.eyJleHAiOjE3MzM0NjkzNTIsImlhdCI6MTczMjI1OTc1MiwianRpIjoiSkk3TURtTm4yRGMyIiwicmVzb3VyY2UiOiJhcm46YXdzOml2czphcC1zb3V0aC0xOjI5ODYzOTcxMjAzMjpzdGFnZS9EWVcxcjd4M20xSGQiLCJ0b3BpYyI6IkRZVzFyN3gzbTFIZCIsImV2ZW50c191cmwiOiJ3c3M6Ly9nbG9iYWwuZXZlbnRzLmxpdmUtdmlkZW8ubmV0Iiwid2hpcF91cmwiOiJodHRwczovLzdkNzdlNDI1NDVkYy5nbG9iYWwtYm0ud2hpcC5saXZlLXZpZGVvLm5ldCIsInVzZXJfaWQiOiJzdWJzY3JpYmVyIiwiY2FwYWJpbGl0aWVzIjp7ImFsbG93X3B1Ymxpc2giOnRydWUsImFsbG93X3N1YnNjcmliZSI6dHJ1ZX0sInZlcnNpb24iOiIwLjAifQ.MGQCMHY4x1t9flXOroLPjZUZ7ulrPG8eubOJDoiOiysA9RVq4OhSRQ2iPaXmlyjtVhw7EgIwEJCFo7lF28iAlsu1GWI3_kh1pzkLvPfOZaEUJ4cAe8grXEERhNLO8y5KEAQOr8Sg";
 //        (String) methodCall.arguments;
         Log.d("Stage", token);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && token != null) {
@@ -344,15 +283,14 @@ public class IVSStagePlayerView implements PlatformView, MethodChannel.MethodCal
     public List<LocalStageStream> stageStreamsToPublishForParticipant(@NonNull Stage stage, @NonNull ParticipantInfo participantInfo) {
         Log.d("Stage", "stageStreamsToPublishForParticipant");
         Log.d("Stage 2", participantInfo.isLocal ? "local" : "no local");
-//        return Collections.emptyList();
-        return getLocalStageStreams();
+        return Collections.emptyList();
     }
 
 
     @Override
     public boolean shouldPublishFromParticipant(@NonNull Stage stage, @NonNull ParticipantInfo participantInfo) {
         Log.d("Stage", "shouldPublishFromParticipant");
-        return true;
+        return false;
     }
 
     @Override
