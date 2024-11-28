@@ -27,12 +27,25 @@ import com.amazonaws.ivs.broadcast.StageStream;
 import com.amazonaws.ivs.broadcast.StageVideoConfiguration;
 import com.amazonaws.ivs.broadcast.SubscribeConfiguration;
 import com.amazonaws.ivs.broadcast.Stage;
+import com.amazonaws.ivs.chat.messaging.ChatRoom;
+import com.amazonaws.ivs.chat.messaging.ChatRoomListener;
+import com.amazonaws.ivs.chat.messaging.ChatToken;
+import com.amazonaws.ivs.chat.messaging.DisconnectReason;
+import com.amazonaws.ivs.chat.messaging.entities.ChatEvent;
+import com.amazonaws.ivs.chat.messaging.entities.ChatMessage;
+import com.amazonaws.ivs.chat.messaging.entities.DeleteMessageEvent;
+import com.amazonaws.ivs.chat.messaging.entities.DisconnectUserEvent;
+import com.amazonaws.ivs.chat.messaging.requests.SendMessageRequest;
 import com.example.ivs_broadcaster.views.RemoteViewFactory;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.TimeZone;
 
 @SuppressLint("NewApi")
 public class IvsBroadcasterPlugin implements FlutterPlugin, MethodChannel.MethodCallHandler, Stage.Strategy, StageRenderer {
@@ -45,6 +58,7 @@ public class IvsBroadcasterPlugin implements FlutterPlugin, MethodChannel.Method
     ArrayList<String> views = new ArrayList<>();
     ArrayList<String> joined = new ArrayList<>();
     ArrayList<String> allViews = new ArrayList<>();
+    ChatRoom chatRoom;
 
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding binding) {
@@ -81,9 +95,77 @@ public class IvsBroadcasterPlugin implements FlutterPlugin, MethodChannel.Method
             case "leave":
                 leave(call, result);
                 break;
+            case "joinChat":
+                joinChat(call, result);
+                break;
             default:
                 result.notImplemented();
         }
+    }
+
+    private void joinChat(MethodCall methodCall, @NonNull MethodChannel.Result result) {
+        String token = (String) methodCall.argument("token");
+        String sessionExpiryIso = (String) methodCall.argument("sessionExpiryIso");
+        String expiryIso = (String) methodCall.argument("expiryIso");
+        SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+
+        isoFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        Date sessionExpiryDate = null;
+        Date tokenExpiryDate = null;
+
+        try {
+            sessionExpiryDate = isoFormat.parse(sessionExpiryIso);
+            tokenExpiryDate = isoFormat.parse(expiryIso);
+            // Use the token with expiry dates
+            Date finalTokenExpiryDate = tokenExpiryDate;
+            Date finalSessionExpiryDate = sessionExpiryDate;
+            chatRoom = new ChatRoom("ap-south-1", chatTokenCallback -> {
+                chatTokenCallback.onSuccess(new ChatToken(token, finalSessionExpiryDate, finalTokenExpiryDate));
+                return null;
+            }, 10);
+            Log.d("ChatToken", "Token: " + token + ", Session Expiry: " + finalSessionExpiryDate + ", Token Expiry: " + finalTokenExpiryDate);
+        } catch (ParseException e) {
+            Log.d("ChatRoom", e.getMessage());
+        }
+
+        chatRoom.connect();
+        chatRoom.setListener(new ChatRoomListener() {
+            @Override
+            public void onConnecting(@NonNull ChatRoom chatRoom) {
+                Log.d("ChatRoom", "onConnecting");
+            }
+
+            @Override
+            public void onConnected(@NonNull ChatRoom chatRoom) {
+                Log.d("ChatRoom", "onConnected");
+            }
+
+            @Override
+            public void onDisconnected(@NonNull ChatRoom chatRoom, @NonNull DisconnectReason disconnectReason) {
+                Log.d("ChatRoom", "onDisconnected");
+            }
+
+            @Override
+            public void onMessageReceived(@NonNull ChatRoom chatRoom, @NonNull ChatMessage chatMessage) {
+                Log.d("ChatRoom", "onMessageReceived");
+            }
+
+            @Override
+            public void onEventReceived(@NonNull ChatRoom chatRoom, @NonNull ChatEvent chatEvent) {
+                Log.d("ChatRoom", "onEventReceived");
+            }
+
+            @Override
+            public void onMessageDeleted(@NonNull ChatRoom chatRoom, @NonNull DeleteMessageEvent deleteMessageEvent) {
+                Log.d("ChatRoom", "onMessageDeleted");
+            }
+
+            @Override
+            public void onUserDisconnected(@NonNull ChatRoom chatRoom, @NonNull DisconnectUserEvent disconnectUserEvent) {
+                Log.d("ChatRoom", "onUserDisconnected");
+            }
+        });
+        result.success(null);
     }
 
     private void initializeWithJoin(MethodCall methodCall, @NonNull MethodChannel.Result result) {
@@ -130,6 +212,7 @@ public class IvsBroadcasterPlugin implements FlutterPlugin, MethodChannel.Method
     private void leave(MethodCall methodCall, @NonNull MethodChannel.Result result) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             stage.leave();
+            chatRoom.disconnect();
             stageMap.put("is_joined", false);
             if (stageSink != null) stageSink.success(stageMap);
             result.success("Success");
@@ -237,6 +320,11 @@ public class IvsBroadcasterPlugin implements FlutterPlugin, MethodChannel.Method
         Log.d("Stage onPaJoined", participantInfo.userId.toString());
         joined.add(participantInfo.participantId);
         stageMap.put("joined", joined);
+        String message = String.format(
+                "<>^S^E^R^V^E^R<>::dev::{\"type\":\"participantJoined\",\"category\":\"liveRoom\",\"data\":{\"participantId\":\"%s\"}}",
+                participantInfo.participantId
+        );
+        chatRoom.sendMessage(new SendMessageRequest(message));
 
         if (stageSink != null) stageSink.success(stageMap);
 //        participantInfo.capabilities.add(ParticipantInfo.Capabilities.SUBSCRIBE);
@@ -248,6 +336,11 @@ public class IvsBroadcasterPlugin implements FlutterPlugin, MethodChannel.Method
         Log.d("Stage onPartLeft", participantInfo.toString());
         stageMap.put("left", participantInfo.participantId);
         joined.remove(participantInfo.participantId);
+        String message = String.format(
+                "<>^S^E^R^V^E^R<>::dev::{\"type\":\"participantLeft\",\"category\":\"liveRoom\",\"data\":{\"participantId\":\"%s\"}}",
+                participantInfo.participantId
+        );
+        chatRoom.sendMessage(new SendMessageRequest(message));
         if (stageSink != null) stageSink.success(stageMap);
     }
 
