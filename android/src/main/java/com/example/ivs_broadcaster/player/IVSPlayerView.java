@@ -1,4 +1,4 @@
-package com.example.ivs_broadcaster;
+package com.example.ivs_broadcaster.player;
 
 import android.content.Context;
 import android.net.Uri;

@@ -1,10 +1,9 @@
-package com.example.ivs_broadcaster;
+package com.example.ivs_broadcaster.stage;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
 import android.util.Log;
-import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -121,8 +120,7 @@ public class IVSStagePlayerView implements PlatformView, MethodChannel.MethodCal
 
     // Flutter
     private void initializeWithJoin(MethodCall methodCall, @NonNull MethodChannel.Result result) {
-        String token = "eyJhbGciOiJLTVMiLCJ0eXAiOiJKV1QifQ.eyJleHAiOjE3MzM0NjkzNTIsImlhdCI6MTczMjI1OTc1MiwianRpIjoiSkk3TURtTm4yRGMyIiwicmVzb3VyY2UiOiJhcm46YXdzOml2czphcC1zb3V0aC0xOjI5ODYzOTcxMjAzMjpzdGFnZS9EWVcxcjd4M20xSGQiLCJ0b3BpYyI6IkRZVzFyN3gzbTFIZCIsImV2ZW50c191cmwiOiJ3c3M6Ly9nbG9iYWwuZXZlbnRzLmxpdmUtdmlkZW8ubmV0Iiwid2hpcF91cmwiOiJodHRwczovLzdkNzdlNDI1NDVkYy5nbG9iYWwtYm0ud2hpcC5saXZlLXZpZGVvLm5ldCIsInVzZXJfaWQiOiJzdWJzY3JpYmVyIiwiY2FwYWJpbGl0aWVzIjp7ImFsbG93X3B1Ymxpc2giOnRydWUsImFsbG93X3N1YnNjcmliZSI6dHJ1ZX0sInZlcnNpb24iOiIwLjAifQ.MGQCMHY4x1t9flXOroLPjZUZ7ulrPG8eubOJDoiOiysA9RVq4OhSRQ2iPaXmlyjtVhw7EgIwEJCFo7lF28iAlsu1GWI3_kh1pzkLvPfOZaEUJ4cAe8grXEERhNLO8y5KEAQOr8Sg";
-//        (String) methodCall.arguments;
+        String token = (String) methodCall.arguments;
         Log.d("Stage", token);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && token != null) {
             stage = new Stage(context, token, this);
@@ -158,9 +156,6 @@ public class IVSStagePlayerView implements PlatformView, MethodChannel.MethodCal
     // Flutter dispose
     private void destroy() {
         stage.leave();
-//        if (surface != null) {
-//            surface.release();
-//        }
     }
 
     // Render

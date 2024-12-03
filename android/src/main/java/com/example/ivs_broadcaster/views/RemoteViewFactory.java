@@ -1,6 +1,7 @@
 
 package com.example.ivs_broadcaster.views;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
 import android.view.View;
@@ -8,11 +9,14 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
+import com.amazonaws.ivs.broadcast.ImagePreviewSurfaceView;
+import com.amazonaws.ivs.broadcast.ImagePreviewView;
+
 import io.flutter.plugin.common.StandardMessageCodec;
 import io.flutter.plugin.platform.PlatformView;
 import io.flutter.plugin.platform.PlatformViewFactory;
 
-@RequiresApi(api = Build.VERSION_CODES.P)
+@SuppressLint("NewApi")
 public class RemoteViewFactory extends PlatformViewFactory {
     private final View view;
 
