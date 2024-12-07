@@ -5,6 +5,7 @@ import android.os.Looper;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.amazonaws.ivs.chat.messaging.ChatRoom;
 import com.amazonaws.ivs.chat.messaging.ChatRoomListener;
@@ -14,6 +15,7 @@ import com.amazonaws.ivs.chat.messaging.entities.ChatEvent;
 import com.amazonaws.ivs.chat.messaging.entities.ChatMessage;
 import com.amazonaws.ivs.chat.messaging.entities.DeleteMessageEvent;
 import com.amazonaws.ivs.chat.messaging.entities.DisconnectUserEvent;
+import com.amazonaws.ivs.chat.messaging.logger.ChatLogger;
 import com.amazonaws.ivs.chat.messaging.requests.DisconnectUserRequest;
 
 import java.text.ParseException;
@@ -39,6 +41,7 @@ public class StageChat {
             room.setReceiveEventListener$ivs_chat_messaging_release(null);
             room.setReceiveMessageListener$ivs_chat_messaging_release(null);
             room.disconnect();
+            room = null;
         }
         Log.d("StageChat", "Chat room is destroying...");
         //
@@ -62,6 +65,22 @@ public class StageChat {
             });
             Log.d("StageChat", "Token: " + token + ", Session Expiry: " + finalSessionExpiryDate + ", Token Expiry: " + finalTokenExpiryDate);
             Log.d("StageChat", "Chat is ready");
+            room.setLogger(new ChatLogger() {
+                @Override
+                public void debug(@NonNull String s) {
+                    Log.d("StageChat", s);
+                }
+
+                @Override
+                public void info(@NonNull String s) {
+                    Log.d("StageChat", s);
+                }
+
+                @Override
+                public void error(@NonNull String s, @Nullable Throwable throwable) {
+                    Log.d("StageChat", s);
+                }
+            });
             room.connect();
             room.setListener(new ChatRoomListener() {
                 @Override
@@ -131,6 +150,7 @@ public class StageChat {
         room.setReceiveEventListener$ivs_chat_messaging_release(null);
         room.setReceiveMessageListener$ivs_chat_messaging_release(null);
         room.disconnect();
+        room = null;
         Log.d("StageChat", "Chat leave room is destroying...");
         result.success("Chat is leaving...");
     }

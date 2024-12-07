@@ -53,6 +53,7 @@ public class StageController {
 
     public void leaveStage(MethodCall methodCall, @NonNull MethodChannel.Result result) {
         stage.leave();
+        stage.release();
         result.success("StageController is leaving...");
     }
 }

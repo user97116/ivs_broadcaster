@@ -38,6 +38,7 @@ public class StageListener implements StageRenderer {
     HashMap map = new HashMap();
     EventChannel.EventSink sink;
     ArrayList<String> joinedParticipants = new ArrayList<>();
+    ArrayList<String> viewsParticipants = new ArrayList<>();
     ArrayList<String> leftParticipants = new ArrayList<>();
 
     public StageListener(FlutterPlugin.FlutterPluginBinding binding, EventChannel.EventSink sink, StageChat stageChat) {
@@ -65,7 +66,9 @@ public class StageListener implements StageRenderer {
         StageRenderer.super.onParticipantJoined(stage, participantInfo);
         String message = String.format("<>^S^E^R^V^E^R<>::dev::{\"type\":\"participantJoined\",\"category\":\"liveRoom\",\"data\":{\"participantId\":\"%s\"}}", participantInfo.participantId);
         try {
-            stageChat.room.sendMessage(new SendMessageRequest(message));
+            if (stageChat.room != null) {
+                stageChat.room.sendMessage(new SendMessageRequest(message));
+            }
             Log.d("StageChat", "Message sent");
         } catch (Exception e) {
             Log.d("StageChat", e.getMessage());
@@ -81,7 +84,9 @@ public class StageListener implements StageRenderer {
         StageRenderer.super.onParticipantLeft(stage, participantInfo);
         String message = String.format("<>^S^E^R^V^E^R<>::dev::{\"type\":\"participantLeft\",\"category\":\"liveRoom\",\"data\":{\"participantId\":\"%s\"}}", participantInfo.participantId);
         try {
-            stageChat.room.sendMessage(new SendMessageRequest(message));
+            if (stageChat.room != null) {
+                stageChat.room.sendMessage(new SendMessageRequest(message));
+            }
             Log.d("StageChat", "Message sent left");
         } catch (Exception e) {
             Log.d("StageChat", e.getMessage());
@@ -109,33 +114,33 @@ public class StageListener implements StageRenderer {
     @Override
     public void onStreamsAdded(@NonNull Stage stage, @NonNull ParticipantInfo participantInfo, @NonNull List<StageStream> streams) {
         StageRenderer.super.onStreamsAdded(stage, participantInfo, streams);
-        ArrayList<String> views = new ArrayList<>();
+
         for (int i = 0; i < streams.size(); i++) {
             if (streams.get(i).getStreamType() == StageStream.Type.VIDEO) {
-                String viewId = UUID.randomUUID().toString() + "_" + streams.get(i).getDevice().getDescriptor().urn;
+                String viewId = UUID.randomUUID().toString() + "_" + streams.get(i).getDevice().getDescriptor().deviceId;
 //                View view = streams.get(i).getPreviewSurfaceView();
                 View view = streams.get(i).getPreviewSurfaceView();
                 final boolean result = binding.getPlatformViewRegistry().registerViewFactory(viewId, new RemoteViewFactory(view));
                 Log.d("PlatformView", String.valueOf(result));
                 Log.d("PlatformView", String.valueOf(streams.get(i).getDevice().isValid()));
-                views.add(viewId);
+                viewsParticipants.removeIf(element -> element.equals(viewId));
+                viewsParticipants.add(viewId);
             }
         }
-        map.put("stream_added", views);
+        map.put("stream_added", viewsParticipants);
         if (sink != null) sink.success(map);
     }
 
     @Override
     public void onStreamsRemoved(@NonNull Stage stage, @NonNull ParticipantInfo participantInfo, @NonNull List<StageStream> streams) {
         StageRenderer.super.onStreamsRemoved(stage, participantInfo, streams);
-        ArrayList<String> views = new ArrayList<>();
         for (int i = 0; i < streams.size(); i++) {
             if (streams.get(i).getStreamType() == StageStream.Type.VIDEO) {
-                String viewId = streams.get(i).getDevice().getDescriptor().urn;
-                views.add(viewId);
+                String deviceId = streams.get(i).getDevice().getDescriptor().deviceId;
+                viewsParticipants.removeIf(element -> element.contains(deviceId));
             }
         }
-        map.put("stream_removed", views);
+        map.put("stream_removed", viewsParticipants);
         if (sink != null) sink.success(map);
     }
 
