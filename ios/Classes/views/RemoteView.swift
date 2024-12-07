@@ -4,5 +4,7 @@ import Flutter
 import UIKit
 
 public class RemoteView: NSObject, FlutterPlatformView {
-    
+    func hello() {
+        FlutterPla
+    }
 }
