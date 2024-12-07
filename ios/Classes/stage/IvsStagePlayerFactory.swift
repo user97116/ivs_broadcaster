@@ -14,4 +14,5 @@ public class IvsStagePlayerFactory: NSObject, FlutterPlatformViewFactory {
     public func create(withFrame frame: CGRect, viewIdentifier viewId: Int64, arguments args: Any?) -> FlutterPlatformView {
         return IvsStagePlayerView(frame: frame, messenger: messenger)
     }
+    
 }

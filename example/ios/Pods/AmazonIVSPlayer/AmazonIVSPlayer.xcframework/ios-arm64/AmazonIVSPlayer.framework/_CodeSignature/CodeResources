@@ -6,7 +6,11 @@
 	<dict>
 		<key>Headers/AVPictureInPictureController+IVSPlayer.h</key>
 		<data>
-		bBdjdOz3adjrgEqAx+oSzZhFqJI=
+		v+Wuo7+jBoMXFnnzle43TgU2kI0=
+		</data>
+		<key>Headers/AmazonIVSPlayer-Swift.h</key>
+		<data>
+		SU3IkxBonJMBjA4bJ22cQGNvmlo=
 		</data>
 		<key>Headers/AmazonIVSPlayer.h</key>
 		<data>
@@ -22,7 +26,7 @@
 		</data>
 		<key>Headers/IVSErrors.h</key>
 		<data>
-		tcxLRYHaos2TO6BQ97LK/MtG0n0=
+		dem1uCqFyqnHl5dEDjOqmXfwLy4=
 		</data>
 		<key>Headers/IVSPlayer.h</key>
 		<data>
@@ -34,11 +38,11 @@
 		</data>
 		<key>Headers/IVSPlayerLayer.h</key>
 		<data>
-		puSf/u6CHHYyhF5/1H3eE3Bf4fw=
+		vpm2vJOZsh7jc3vxRyeGeLfwfY0=
 		</data>
 		<key>Headers/IVSPlayerView.h</key>
 		<data>
-		WRkOXClvJjPVcu6hoeFOSujVX0k=
+		Na+UPQ9yTFdxi7T2c5GaCcAABuM=
 		</data>
 		<key>Headers/IVSQuality.h</key>
 		<data>
@@ -62,11 +66,31 @@
 		</data>
 		<key>Info.plist</key>
 		<data>
-		1qiCEYRKUrFxryTtoKAdwaV2kMY=
+		k+1CwpipeqJETvkRW/zcXUFh7+g=
+		</data>
+		<key>Modules/AmazonIVSPlayer.swiftmodule/arm64-apple-ios.abi.json</key>
+		<data>
+		FSPnLbho3G+LL9smI3XgVOqBIQ4=
+		</data>
+		<key>Modules/AmazonIVSPlayer.swiftmodule/arm64-apple-ios.private.swiftinterface</key>
+		<data>
+		nJQvK+yaHtFSFNy5v7ZVKEUqv90=
+		</data>
+		<key>Modules/AmazonIVSPlayer.swiftmodule/arm64-apple-ios.swiftdoc</key>
+		<data>
+		gqfKaqlGavtihFkVUKkKSRLa0ik=
+		</data>
+		<key>Modules/AmazonIVSPlayer.swiftmodule/arm64-apple-ios.swiftinterface</key>
+		<data>
+		nJQvK+yaHtFSFNy5v7ZVKEUqv90=
+		</data>
+		<key>Modules/AmazonIVSPlayer.swiftmodule/arm64-apple-ios.swiftmodule</key>
+		<data>
+		xzBrv6sjQHDO1mNF7k4A1C+0tes=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
-		kI1GPp3WOjxAlYXmPAK3/Z3EXq4=
+		P4fUgR/Xc9IZK4Qo+bWlzGSGAmY=
 		</data>
 		<key>Modules/module.private.modulemap</key>
 		<data>
@@ -86,7 +110,7 @@
 		</data>
 		<key>PrivateHeaders/IVSPlayer+Internal.h</key>
 		<data>
-		3ZC5cyd7hmcxWjnVUjuK9mVvEd4=
+		pshtDyIMznc0NE3f8lV8z9+VkMI=
 		</data>
 		<key>PrivateHeaders/IVSSource.h</key>
 		<data>
@@ -99,7 +123,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			CY4nIAWpW8qhyTGJ9NvxIeedxLM5TMdIkyzJnhUYxIo=
+			SqzJNorQ3VBSr7CWBkH3i7Xz8KMm+GByHyog2yE5IZI=
+			</data>
+		</dict>
+		<key>Headers/AmazonIVSPlayer-Swift.h</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			88UhzRxlWHq/FYTX5SThCAUqahJYked6SJzKR0f2Jts=
 			</data>
 		</dict>
 		<key>Headers/AmazonIVSPlayer.h</key>
@@ -127,7 +158,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			98veYssoQDpwBZ9MXN0fNyNWESoQa0jnzo8gdUN4mRU=
+			y6icK27ImXGYo5uhsrhALyvQQVw8BgPo+A/59G5YHKw=
 			</data>
 		</dict>
 		<key>Headers/IVSPlayer.h</key>
@@ -148,14 +179,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			8LaY6u7GA7N81WK4PpxOnmxwvkD6P8nJmlmJubwUWYY=
+			xDAJ8vpHyccgYq0uU5me5z3dv3B4bUwVH8sODEmALK4=
 			</data>
 		</dict>
 		<key>Headers/IVSPlayerView.h</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			OGyQG8JDXaUKS/Wnfm7M7uPek/B3uNs45HkPLeuAwwU=
+			skhwZn2wWyMdKCBeFx2Ja03CDKI5pT0+51xMYc+2GGI=
 			</data>
 		</dict>
 		<key>Headers/IVSQuality.h</key>
@@ -193,11 +224,46 @@
 			vrQnnCECWJWUu9gRF9ZLe15fvy8lIWYN9uf8C519j2U=
 			</data>
 		</dict>
+		<key>Modules/AmazonIVSPlayer.swiftmodule/arm64-apple-ios.abi.json</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			KnRdWE4y6t4QM5zi5JDptPdHFgJy1Tku+7GLkZS2aNM=
+			</data>
+		</dict>
+		<key>Modules/AmazonIVSPlayer.swiftmodule/arm64-apple-ios.private.swiftinterface</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			JxTe/JAjgjKCQze4/VYO0gapwDdh6knyosN4A5UUlJQ=
+			</data>
+		</dict>
+		<key>Modules/AmazonIVSPlayer.swiftmodule/arm64-apple-ios.swiftdoc</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			7IC8hZXrYsR2MKC+uC/lEfOlR+qIkHDSeNCNLv3jQc8=
+			</data>
+		</dict>
+		<key>Modules/AmazonIVSPlayer.swiftmodule/arm64-apple-ios.swiftinterface</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			JxTe/JAjgjKCQze4/VYO0gapwDdh6knyosN4A5UUlJQ=
+			</data>
+		</dict>
+		<key>Modules/AmazonIVSPlayer.swiftmodule/arm64-apple-ios.swiftmodule</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			wh5uUjnqjtHHgo4XMEqyqfw1Wqf0cJGxJPqpP/S5Aeg=
+			</data>
+		</dict>
 		<key>Modules/module.modulemap</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			Zp1Z6XTaXX5KA8bcU0uBC/c0OQDZOqux6V4edwxnWxA=
+			nMTUA3l+4M3Sa4uo/pruHxEAOcLZ2tvmMhxAIPzFQj4=
 			</data>
 		</dict>
 		<key>Modules/module.private.modulemap</key>
@@ -232,7 +298,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			EkD6NBZAEWw3GyouZjD5Fyd20iFfwUEUHjAz0gSMJhQ=
+			gARQJAv9t4lEMUsZeiGb+dmBqxuz0JAK5TtX8aV5EmU=
 			</data>
 		</dict>
 		<key>PrivateHeaders/IVSSource.h</key>

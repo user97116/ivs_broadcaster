@@ -18,18 +18,21 @@
     "Flutter": [
 
     ],
-    "AmazonIVSBroadcast": [
-      "~> 1.19.0"
-    ],
     "AmazonIVSPlayer": [
-      "~> 1.29.0"
+
+    ],
+    "AmazonIVSBroadcast/Stages": [
+
+    ],
+    "AmazonIVSChat": [
+
     ]
   },
   "frameworks": [
     "CoreMedia"
   ],
   "platforms": {
-    "ios": "12.0"
+    "ios": "15.0"
   },
   "pod_target_xcconfig": {
     "DEFINES_MODULE": "YES",

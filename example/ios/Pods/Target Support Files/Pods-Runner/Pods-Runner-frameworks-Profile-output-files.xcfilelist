@@ -1,4 +1,5 @@
 ${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/integration_test.framework
 ${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ivs_broadcaster.framework
 ${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AmazonIVSBroadcast.framework
+${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AmazonIVSChatMessaging.framework
 ${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AmazonIVSPlayer.framework

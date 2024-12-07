@@ -5,6 +5,10 @@ This application makes use of the following third party libraries:
 
 https://broadcast.live-video.net/LICENSE.txt
 
+## AmazonIVSChat
+
+https://ivschat.live-video.net/1.0.0/LICENSE.txt
+
 ## AmazonIVSPlayer
 
 https://player.live-video.net/LICENSE.txt

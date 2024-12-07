@@ -6,7 +6,11 @@
 	<dict>
 		<key>Headers/AVPictureInPictureController+IVSPlayer.h</key>
 		<data>
-		bBdjdOz3adjrgEqAx+oSzZhFqJI=
+		v+Wuo7+jBoMXFnnzle43TgU2kI0=
+		</data>
+		<key>Headers/AmazonIVSPlayer-Swift.h</key>
+		<data>
+		wTp3xeIWjKKzRJLYRk0MxBigXtQ=
 		</data>
 		<key>Headers/AmazonIVSPlayer.h</key>
 		<data>
@@ -22,7 +26,7 @@
 		</data>
 		<key>Headers/IVSErrors.h</key>
 		<data>
-		tcxLRYHaos2TO6BQ97LK/MtG0n0=
+		dem1uCqFyqnHl5dEDjOqmXfwLy4=
 		</data>
 		<key>Headers/IVSPlayer.h</key>
 		<data>
@@ -34,11 +38,11 @@
 		</data>
 		<key>Headers/IVSPlayerLayer.h</key>
 		<data>
-		puSf/u6CHHYyhF5/1H3eE3Bf4fw=
+		vpm2vJOZsh7jc3vxRyeGeLfwfY0=
 		</data>
 		<key>Headers/IVSPlayerView.h</key>
 		<data>
-		WRkOXClvJjPVcu6hoeFOSujVX0k=
+		Na+UPQ9yTFdxi7T2c5GaCcAABuM=
 		</data>
 		<key>Headers/IVSQuality.h</key>
 		<data>
@@ -62,11 +66,51 @@
 		</data>
 		<key>Info.plist</key>
 		<data>
-		ZwIUyDV7x0IHCcbmn21wyayOWCk=
+		t5jJxhNFlHAO6xow7V4jYTXQ2xM=
+		</data>
+		<key>Modules/AmazonIVSPlayer.swiftmodule/arm64-apple-ios-simulator.abi.json</key>
+		<data>
+		FSPnLbho3G+LL9smI3XgVOqBIQ4=
+		</data>
+		<key>Modules/AmazonIVSPlayer.swiftmodule/arm64-apple-ios-simulator.private.swiftinterface</key>
+		<data>
+		Hr+6kfhHHO6YxV/SIg2pdtV1H2s=
+		</data>
+		<key>Modules/AmazonIVSPlayer.swiftmodule/arm64-apple-ios-simulator.swiftdoc</key>
+		<data>
+		+06OMs7dMtpi9DRt5ce+mVGnN6Q=
+		</data>
+		<key>Modules/AmazonIVSPlayer.swiftmodule/arm64-apple-ios-simulator.swiftinterface</key>
+		<data>
+		Hr+6kfhHHO6YxV/SIg2pdtV1H2s=
+		</data>
+		<key>Modules/AmazonIVSPlayer.swiftmodule/arm64-apple-ios-simulator.swiftmodule</key>
+		<data>
+		wRnczMbztX2W0m+1JJwzd2IyZHs=
+		</data>
+		<key>Modules/AmazonIVSPlayer.swiftmodule/x86_64-apple-ios-simulator.abi.json</key>
+		<data>
+		FSPnLbho3G+LL9smI3XgVOqBIQ4=
+		</data>
+		<key>Modules/AmazonIVSPlayer.swiftmodule/x86_64-apple-ios-simulator.private.swiftinterface</key>
+		<data>
+		etYtPL+9AvEYj/FIjA34NQ+O3w8=
+		</data>
+		<key>Modules/AmazonIVSPlayer.swiftmodule/x86_64-apple-ios-simulator.swiftdoc</key>
+		<data>
+		SoXijejBDZyDG5/pHyC/im4bE7w=
+		</data>
+		<key>Modules/AmazonIVSPlayer.swiftmodule/x86_64-apple-ios-simulator.swiftinterface</key>
+		<data>
+		etYtPL+9AvEYj/FIjA34NQ+O3w8=
+		</data>
+		<key>Modules/AmazonIVSPlayer.swiftmodule/x86_64-apple-ios-simulator.swiftmodule</key>
+		<data>
+		yFCSfICTqDbnEZ2n492URJoCdLs=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
-		kI1GPp3WOjxAlYXmPAK3/Z3EXq4=
+		P4fUgR/Xc9IZK4Qo+bWlzGSGAmY=
 		</data>
 		<key>Modules/module.private.modulemap</key>
 		<data>
@@ -86,7 +130,7 @@
 		</data>
 		<key>PrivateHeaders/IVSPlayer+Internal.h</key>
 		<data>
-		3ZC5cyd7hmcxWjnVUjuK9mVvEd4=
+		pshtDyIMznc0NE3f8lV8z9+VkMI=
 		</data>
 		<key>PrivateHeaders/IVSSource.h</key>
 		<data>
@@ -99,7 +143,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			CY4nIAWpW8qhyTGJ9NvxIeedxLM5TMdIkyzJnhUYxIo=
+			SqzJNorQ3VBSr7CWBkH3i7Xz8KMm+GByHyog2yE5IZI=
+			</data>
+		</dict>
+		<key>Headers/AmazonIVSPlayer-Swift.h</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			ALqjbtsDoZ4EMvscSy5rz5s+9CO55yRYojrR3Rsy4JI=
 			</data>
 		</dict>
 		<key>Headers/AmazonIVSPlayer.h</key>
@@ -127,7 +178,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			98veYssoQDpwBZ9MXN0fNyNWESoQa0jnzo8gdUN4mRU=
+			y6icK27ImXGYo5uhsrhALyvQQVw8BgPo+A/59G5YHKw=
 			</data>
 		</dict>
 		<key>Headers/IVSPlayer.h</key>
@@ -148,14 +199,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			8LaY6u7GA7N81WK4PpxOnmxwvkD6P8nJmlmJubwUWYY=
+			xDAJ8vpHyccgYq0uU5me5z3dv3B4bUwVH8sODEmALK4=
 			</data>
 		</dict>
 		<key>Headers/IVSPlayerView.h</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			OGyQG8JDXaUKS/Wnfm7M7uPek/B3uNs45HkPLeuAwwU=
+			skhwZn2wWyMdKCBeFx2Ja03CDKI5pT0+51xMYc+2GGI=
 			</data>
 		</dict>
 		<key>Headers/IVSQuality.h</key>
@@ -193,11 +244,81 @@
 			vrQnnCECWJWUu9gRF9ZLe15fvy8lIWYN9uf8C519j2U=
 			</data>
 		</dict>
+		<key>Modules/AmazonIVSPlayer.swiftmodule/arm64-apple-ios-simulator.abi.json</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			KnRdWE4y6t4QM5zi5JDptPdHFgJy1Tku+7GLkZS2aNM=
+			</data>
+		</dict>
+		<key>Modules/AmazonIVSPlayer.swiftmodule/arm64-apple-ios-simulator.private.swiftinterface</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			Htkj8s0uuRGNadMVgJ1f1hzEv8dMJFDSWbBWIGJ/Xx8=
+			</data>
+		</dict>
+		<key>Modules/AmazonIVSPlayer.swiftmodule/arm64-apple-ios-simulator.swiftdoc</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			SySI9DwweiYGNlGtwxQU5EJ1B7m8P+KSwVUQy74Z8RU=
+			</data>
+		</dict>
+		<key>Modules/AmazonIVSPlayer.swiftmodule/arm64-apple-ios-simulator.swiftinterface</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			Htkj8s0uuRGNadMVgJ1f1hzEv8dMJFDSWbBWIGJ/Xx8=
+			</data>
+		</dict>
+		<key>Modules/AmazonIVSPlayer.swiftmodule/arm64-apple-ios-simulator.swiftmodule</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			BVnQniJKL9gpSLnf44HY3IMTGi8/QlHB/DYjSyD2JsU=
+			</data>
+		</dict>
+		<key>Modules/AmazonIVSPlayer.swiftmodule/x86_64-apple-ios-simulator.abi.json</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			KnRdWE4y6t4QM5zi5JDptPdHFgJy1Tku+7GLkZS2aNM=
+			</data>
+		</dict>
+		<key>Modules/AmazonIVSPlayer.swiftmodule/x86_64-apple-ios-simulator.private.swiftinterface</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			sQ9LnElEimLdTGJwjB/LT+EJ0+c0xHEdA4BeSx69h0U=
+			</data>
+		</dict>
+		<key>Modules/AmazonIVSPlayer.swiftmodule/x86_64-apple-ios-simulator.swiftdoc</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			W3N1l2t5hAvK5BydcYNNdsKZCLk5VHd/dBahz/fnys8=
+			</data>
+		</dict>
+		<key>Modules/AmazonIVSPlayer.swiftmodule/x86_64-apple-ios-simulator.swiftinterface</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			sQ9LnElEimLdTGJwjB/LT+EJ0+c0xHEdA4BeSx69h0U=
+			</data>
+		</dict>
+		<key>Modules/AmazonIVSPlayer.swiftmodule/x86_64-apple-ios-simulator.swiftmodule</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			I7Uymagjz2QynarAu09jlhQXOkVdIofc48a72JC9kmc=
+			</data>
+		</dict>
 		<key>Modules/module.modulemap</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			Zp1Z6XTaXX5KA8bcU0uBC/c0OQDZOqux6V4edwxnWxA=
+			nMTUA3l+4M3Sa4uo/pruHxEAOcLZ2tvmMhxAIPzFQj4=
 			</data>
 		</dict>
 		<key>Modules/module.private.modulemap</key>
@@ -232,7 +353,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			EkD6NBZAEWw3GyouZjD5Fyd20iFfwUEUHjAz0gSMJhQ=
+			gARQJAv9t4lEMUsZeiGb+dmBqxuz0JAK5TtX8aV5EmU=
 			</data>
 		</dict>
 		<key>PrivateHeaders/IVSSource.h</key>

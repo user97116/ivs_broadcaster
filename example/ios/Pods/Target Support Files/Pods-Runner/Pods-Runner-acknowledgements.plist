@@ -24,6 +24,16 @@
 		</dict>
 		<dict>
 			<key>FooterText</key>
+			<string>https://ivschat.live-video.net/1.0.0/LICENSE.txt</string>
+			<key>License</key>
+			<string>Custom</string>
+			<key>Title</key>
+			<string>AmazonIVSChat</string>
+			<key>Type</key>
+			<string>PSGroupSpecifier</string>
+		</dict>
+		<dict>
+			<key>FooterText</key>
 			<string>https://player.live-video.net/LICENSE.txt</string>
 			<key>License</key>
 			<string>Custom</string>

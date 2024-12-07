@@ -1,5 +1,6 @@
 ${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-frameworks.sh
 ${BUILT_PRODUCTS_DIR}/integration_test/integration_test.framework
 ${BUILT_PRODUCTS_DIR}/ivs_broadcaster/ivs_broadcaster.framework
-${PODS_XCFRAMEWORKS_BUILD_DIR}/AmazonIVSBroadcast/Core/AmazonIVSBroadcast.framework/AmazonIVSBroadcast
+${PODS_XCFRAMEWORKS_BUILD_DIR}/AmazonIVSBroadcast/Stages/AmazonIVSBroadcast.framework/AmazonIVSBroadcast
+${PODS_XCFRAMEWORKS_BUILD_DIR}/AmazonIVSChat/Messaging/AmazonIVSChatMessaging.framework/AmazonIVSChatMessaging
 ${PODS_XCFRAMEWORKS_BUILD_DIR}/AmazonIVSPlayer/AmazonIVSPlayer.framework/AmazonIVSPlayer
