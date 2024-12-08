@@ -12,6 +12,7 @@ public class IVSPlayerFlutterView: NSObject, FlutterPlatformView, IVSPlayer.Dele
     init(frame: CGRect, messenger: FlutterBinaryMessenger) {
         super.init()
         print("StreamView initializing...")
+        
 
         // Initialize the player
         self.player = IVSPlayer()
