@@ -3,13 +3,18 @@ import AmazonIVSBroadcast
 
 public class StageController: NSObject {
     public var stage: IVSStage?;
+    public var stageSink: FlutterEventSink?
+
+    init(stageSink: FlutterEventSink? = nil) {
+        self.stageSink = stageSink
+    }
     
     public func joinStage(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         if let arguments = call.arguments as? [String: Any] {
-            var token = arguments["token"] as? String
-            var shouldPublish = arguments["shouldPublish"] as? Bool ?? false
+            let token = arguments["token"] as? String
+            let shouldPublish = arguments["shouldPublish"] as? Bool ?? false
             
-            print("StageController: token \(token)")
+            print("StageController: token \(token!)")
             print("StageController: shouldPublish \(shouldPublish)")
             
             do {
@@ -18,7 +23,7 @@ public class StageController: NSObject {
                 }else {
                     stage = try IVSStage(token: token!, strategy:  ViewerStrategy());
                 }
-                stage?.addRenderer(StageListener())
+                stage?.addRenderer(StageListener(stageSink: stageSink))
                 do {
                     try stage?.join()
                     print("StageController: stage is joined")

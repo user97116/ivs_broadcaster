@@ -36,7 +36,7 @@ public class IvsBroadcasterPlugin: NSObject, FlutterPlugin {
             case "init":
 //                stageChat = new StageChat(roomSink);
 //                stageController = new StageController(binding, stageSink, stageChat);
-                stageController =  StageController();
+                stageController =  StageController(stageSink: stageHandler?.stageSink);
                 result(nil)
                 break;
             case "join":
