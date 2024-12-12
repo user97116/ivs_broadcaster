@@ -1,11 +1,12 @@
 import Flutter
 import UIKit
+import AVFoundation
 
 public class IvsBroadcasterPlugin: NSObject, FlutterPlugin {
     private static var stageEventChannel: FlutterEventChannel!
     private static var roomEventChannel: FlutterEventChannel!
-    private static var stageHandler: StageStreamHandler?
-    private static var roomHandler: RoomStreamHandler?
+    private static var stageHandler: StageStreamHandler = StageStreamHandler()
+    private static var roomHandler: RoomStreamHandler = RoomStreamHandler()
     private static var stageController: StageController?
     private static var stageChat: StageChat?;
     
@@ -22,12 +23,13 @@ public class IvsBroadcasterPlugin: NSObject, FlutterPlugin {
       methodChannel.setMethodCallHandler(self.onMethodCall)
       
       self.stageEventChannel = FlutterEventChannel(name: "gb_ivs_stage_event", binaryMessenger: registrar.messenger())
-      self.stageHandler = StageStreamHandler()
       self.stageEventChannel.setStreamHandler(self.stageHandler)
       
       self.roomEventChannel = FlutterEventChannel(name: "gb_ivs_stage_event_room", binaryMessenger: registrar.messenger())
-      self.roomHandler = RoomStreamHandler()
       self.roomEventChannel.setStreamHandler(self.roomHandler)
+      Task {
+         await AVCaptureDevice.requestAccess(for: .video)
+      }
   }
     
 
@@ -35,8 +37,8 @@ public class IvsBroadcasterPlugin: NSObject, FlutterPlugin {
         print("amar " + call.method)
         switch (call.method) {
             case "init":
-                stageChat =  StageChat(roomSink: roomHandler?.roomSink);
-                stageController =  StageController(stageSink: stageHandler?.stageSink, stageChat: stageChat);
+                stageChat =  StageChat(roomSink: roomHandler.roomSink);
+                stageController =  StageController(stageSink: stageHandler.stageSink, stageChat: stageChat);
                 result(nil)
                 break;
             case "join":
@@ -46,7 +48,7 @@ public class IvsBroadcasterPlugin: NSObject, FlutterPlugin {
                 stageController?.leaveStage(call, result: result)
                 break;
             case "joinChat":
-                stageChat?.join(call, result: result)
+               stageChat?.join(call, result: result)
                 break;
             case "leaveChat":
                 stageChat?.leave(call, result: result)
@@ -62,11 +64,13 @@ class StageStreamHandler: NSObject, FlutterStreamHandler {
 
     func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink) -> FlutterError? {
         stageSink = events
+        print("StageStreamHandler on listen")
         return nil
     }
 
     func onCancel(withArguments arguments: Any?) -> FlutterError? {
         stageSink = nil
+        print("StageStreamHandler on oncancel")
         return nil
     }
 }

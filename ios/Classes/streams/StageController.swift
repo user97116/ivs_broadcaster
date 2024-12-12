@@ -21,11 +21,16 @@ public class StageController: NSObject {
             
             do {
                 if shouldPublish {
-                    stage = try IVSStage(token: token!, strategy:  PublishStrategy());
+                    let publish =  PublishStrategy();
+                    stage = try IVSStage(token: token!, strategy: publish);
+                    print("StageController: published")
                 }else {
-                    stage = try IVSStage(token: token!, strategy:  ViewerStrategy());
+                    let sub = ViewerStrategy();
+                    stage = try IVSStage(token: token!, strategy: sub);
+                    print("StageController: viewer")
                 }
                 stage?.addRenderer(StageListener(stageSink: stageSink))
+                
                 do {
                     try stage?.join()
                     print("StageController: stage is joined")
