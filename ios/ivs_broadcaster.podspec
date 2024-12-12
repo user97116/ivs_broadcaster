@@ -17,8 +17,6 @@ A new Flutter project.
   s.dependency 'Flutter'
   s.dependency 'AmazonIVSPlayer'
   s.dependency 'AmazonIVSBroadcast/Stages'
-  s.dependency 'AmazonIVSChat'
-  s.dependency 'AmazonIVSChatMessaging'
   s.frameworks       = ['CoreMedia']
   s.platform = :ios, '15.0'
 
