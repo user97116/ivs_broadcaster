@@ -8,13 +8,17 @@ public class StageController: NSObject {
         if let arguments = call.arguments as? [String: Any] {
             var token = arguments["token"] as? String
             var shouldPublish = arguments["shouldPublish"] as? Bool ?? false
+            
+            print("StageController: token \(token)")
+            print("StageController: shouldPublish \(shouldPublish)")
+            
             do {
                 if shouldPublish {
                     stage = try IVSStage(token: token!, strategy:  PublishStrategy());
                 }else {
                     stage = try IVSStage(token: token!, strategy:  ViewerStrategy());
                 }
-//                stage?.addRenderer(<#T##renderer: any IVSStageRenderer##any IVSStageRenderer#>)
+                stage?.addRenderer(StageListener())
                 do {
                     try stage?.join()
                     print("StageController: stage is joined")
