@@ -4,9 +4,11 @@ import AmazonIVSBroadcast
 public class StageController: NSObject {
     public var stage: IVSStage?;
     public var stageSink: FlutterEventSink?
+    private var stageChat: StageChat?
 
-    init(stageSink: FlutterEventSink? = nil) {
+    init(stageSink: FlutterEventSink? = nil, stageChat: StageChat? = nil) {
         self.stageSink = stageSink
+        self.stageChat = stageChat
     }
     
     public func joinStage(_ call: FlutterMethodCall, result: @escaping FlutterResult) {

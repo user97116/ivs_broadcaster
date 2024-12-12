@@ -7,6 +7,7 @@ public class IvsBroadcasterPlugin: NSObject, FlutterPlugin {
     private static var stageHandler: StageStreamHandler?
     private static var roomHandler: RoomStreamHandler?
     private static var stageController: StageController?
+    private static var stageChat: StageChat?;
     
   public static func register(with registrar: FlutterPluginRegistrar) {
       registrar.register(
@@ -34,9 +35,8 @@ public class IvsBroadcasterPlugin: NSObject, FlutterPlugin {
         print("amar " + call.method)
         switch (call.method) {
             case "init":
-//                stageChat = new StageChat(roomSink);
-//                stageController = new StageController(binding, stageSink, stageChat);
-                stageController =  StageController(stageSink: stageHandler?.stageSink);
+                stageChat =  StageChat(roomSink: roomHandler?.roomSink);
+                stageController =  StageController(stageSink: stageHandler?.stageSink, stageChat: stageChat);
                 result(nil)
                 break;
             case "join":
@@ -46,12 +46,10 @@ public class IvsBroadcasterPlugin: NSObject, FlutterPlugin {
                 stageController?.leaveStage(call, result: result)
                 break;
             case "joinChat":
-//                stageChat.join(call, result);
-                result(nil)
+                stageChat?.join(call, result: result)
                 break;
             case "leaveChat":
-//                stageChat.leave(call, result);
-                result(nil)
+                stageChat?.leave(call, result: result)
                 break;
             default:
                 result(FlutterMethodNotImplemented)
