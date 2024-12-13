@@ -9,8 +9,10 @@ public class IvsBroadcasterPlugin: NSObject, FlutterPlugin {
     private static var roomHandler: RoomStreamHandler = RoomStreamHandler()
     private static var stageController: StageController?
     private static var stageChat: StageChat?;
+    private static var binding: FlutterPluginRegistrar?
     
   public static func register(with registrar: FlutterPluginRegistrar) {
+      self.binding = registrar
       registrar.register(
           IvsPlayerFactory(messenger: registrar.messenger()),
           withId: "ivs_player"
@@ -38,7 +40,7 @@ public class IvsBroadcasterPlugin: NSObject, FlutterPlugin {
         switch (call.method) {
             case "init":
                 stageChat =  StageChat(roomSink: roomHandler.roomSink);
-                stageController =  StageController(stageSink: stageHandler.stageSink, stageChat: stageChat);
+                stageController =  StageController(stageSink: stageHandler.stageSink, stageChat: stageChat, binding: binding!);
                 result(nil)
                 break;
             case "join":

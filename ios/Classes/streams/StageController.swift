@@ -5,8 +5,10 @@ public class StageController: NSObject {
     public var stage: IVSStage?;
     public var stageSink: FlutterEventSink?
     private var stageChat: StageChat?
+    private var binding: FlutterPluginRegistrar
 
-    init(stageSink: FlutterEventSink? = nil, stageChat: StageChat? = nil) {
+    init(stageSink: FlutterEventSink? = nil, stageChat: StageChat? = nil, binding:FlutterPluginRegistrar) {
+        self.binding = binding
         self.stageSink = stageSink
         self.stageChat = stageChat
     }
@@ -29,7 +31,7 @@ public class StageController: NSObject {
                     stage = try IVSStage(token: token!, strategy: sub);
                     print("StageController: viewer")
                 }
-                stage?.addRenderer(StageListener(stageSink: stageSink))
+                stage?.addRenderer(StageListener(stageSink: stageSink, stageChat: stageChat!, binding: binding))
                 
                 do {
                     try stage?.join()

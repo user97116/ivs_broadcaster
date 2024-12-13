@@ -9,8 +9,10 @@ public class StageListener: NSObject, IVSStageRenderer {
     var leftParticipants: [String] = []
     var viewsParticipants: [String] = []
     private var stageChat: StageChat
+    private var binding: FlutterPluginRegistrar
 
-    init(stageSink: FlutterEventSink? = nil, stageChat: StageChat) {
+    init(stageSink: FlutterEventSink? = nil, stageChat: StageChat, binding: FlutterPluginRegistrar) {
+        self.binding = binding
         self.stageSink = stageSink
         self.stageChat = stageChat
         print("StageListener init");
@@ -57,6 +59,13 @@ public class StageListener: NSObject, IVSStageRenderer {
         for stream in streams {
             if let imageDevice = stream.device as? IVSImageDevice {
                 let viewId = UUID().uuidString + "_" + stream.device.description;
+                do {
+                    binding.register(RemoveViewFactory(view: try imageDevice.previewView()), withId: viewId)
+                    print("StageListener view is registered")
+
+                }catch {
+                    print("StageListener view not register")
+                }
                 viewsParticipants.removeAll { $0 == viewId }
                 viewsParticipants.append(viewId)
             }
