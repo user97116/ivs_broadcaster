@@ -6,11 +6,17 @@ public class StageController: NSObject {
     public var stageSink: FlutterEventSink?
     private var stageChat: StageChat?
     private var binding: FlutterPluginRegistrar
+    private var viewer: ViewerStrategy
+    private var publiser: PublishStrategy
+    private var listener: StageListener
 
     init(stageSink: FlutterEventSink? = nil, stageChat: StageChat? = nil, binding:FlutterPluginRegistrar) {
         self.binding = binding
         self.stageSink = stageSink
         self.stageChat = stageChat
+        self.viewer = ViewerStrategy()
+        self.publiser = PublishStrategy()
+        self.listener = StageListener(stageSink: stageSink, stageChat: stageChat!, binding: binding)
     }
     
     public func joinStage(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
@@ -23,19 +29,17 @@ public class StageController: NSObject {
             
             do {
                 if shouldPublish {
-                    let publish =  PublishStrategy();
-                    stage = try IVSStage(token: token!, strategy: publish);
+                    stage = try IVSStage(token: token!, strategy: publiser);
                     print("StageController: published")
                 }else {
-                    let sub = ViewerStrategy();
-                    stage = try IVSStage(token: token!, strategy: sub);
+                    stage = try IVSStage(token: token!, strategy: viewer);
                     print("StageController: viewer")
                 }
-                stage?.addRenderer(StageListener(stageSink: stageSink, stageChat: stageChat!, binding: binding))
-                
                 do {
-                    try stage?.join()
-                    print("StageController: stage is joined")
+                    stage?.leave()
+                    stage!.addRenderer(listener)
+                    let x = try stage?.join()
+                    print("StageController: stage is joined \(x)")
                 } catch {
                     print("StageController: stage is not joined")
                 }
@@ -53,3 +57,4 @@ public class StageController: NSObject {
         result("StageController: StageController is leaving...")
     }
 }
+

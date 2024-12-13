@@ -131,6 +131,7 @@ extension IvsStagePlayerView: IVSStageStrategy {
 }
 extension IvsStagePlayerView: IVSStageRenderer {
     public func stage(_ stage: IVSStage, participantDidJoin participant: IVSParticipantInfo) {
+        print("Stage IvsStagePlayerView")
         hashMap["joined"] = participant.participantId;
         if(statusSink != nil) {
             statusSink?(hashMap)

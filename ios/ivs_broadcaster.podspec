@@ -4,7 +4,7 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'ivs_broadcaster'
-  s.version          = '0.0.1'
+  s.version          = '0.0.4'
   s.summary          = 'A new Flutter project.'
   s.description      = <<-DESC
 A new Flutter project.
@@ -17,7 +17,7 @@ A new Flutter project.
   s.dependency 'Flutter'
   s.dependency 'AmazonIVSPlayer'
   s.dependency 'AmazonIVSBroadcast/Stages'
-  s.dependency 'AmazonIVSChat'
+  s.dependency 'AmazonIVSChat/Messaging'
   s.frameworks       = ['CoreMedia']
   s.platform = :ios, '15.0'
 

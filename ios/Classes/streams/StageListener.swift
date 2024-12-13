@@ -17,7 +17,7 @@ public class StageListener: NSObject, IVSStageRenderer {
         self.stageChat = stageChat
         print("StageListener init");
     }
-
+    
     public func stage(_ stage: IVSStage, participantDidJoin participant: IVSParticipantInfo) {
         let participantId = participant.participantId
         let message = "<>^S^E^R^V^E^R<>::dev::{\"type\":\"participantJoined\",\"category\":\"liveRoom\",\"data\":{\"participantId\":\"\(participantId)\"}}"
@@ -58,7 +58,7 @@ public class StageListener: NSObject, IVSStageRenderer {
     public func stage(_ stage: IVSStage, participant: IVSParticipantInfo, didAdd streams: [IVSStageStream]) {
         for stream in streams {
             if let imageDevice = stream.device as? IVSImageDevice {
-                let viewId = UUID().uuidString + "_" + stream.device.description;
+                let viewId = UUID().uuidString + "_" + stream.device.descriptor().urn;
                 do {
                     binding.register(RemoveViewFactory(view: try imageDevice.previewView()), withId: viewId)
                     print("StageListener view is registered")
@@ -79,7 +79,7 @@ public class StageListener: NSObject, IVSStageRenderer {
     public func stage(_ stage: IVSStage, participant: IVSParticipantInfo, didRemove streams: [IVSStageStream]) {
         for stream in streams {
             if let imageDevice = stream.device as? IVSImageDevice {
-                let viewId = stream.device.description;
+                let viewId = stream.device.descriptor().urn;
                 viewsParticipants.removeAll { $0.contains(viewId)}
             }
         }
@@ -89,13 +89,13 @@ public class StageListener: NSObject, IVSStageRenderer {
     }
     
     public func stage(_ stage: IVSStage, didChange connectionState: IVSStageConnectionState, withError error: (any Error)?) {
-        print("StageListener: \(error!)")
+        print("StageListener: \(error) \(connectionState) \(stage)")
     }
     
     public func stage(_ stage: IVSStage, participant: IVSParticipantInfo, didChangeMutedStreams streams: [IVSStageStream]) {
         var streamsMutedChanged: [String] = []
         for stream in streams {
-            let urn = stream.device.description
+            let urn = stream.device.descriptor().urn
             streamsMutedChanged.append(urn)
         }
         map["streams_muted_changed"] = streamsMutedChanged
